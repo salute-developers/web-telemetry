@@ -21,6 +21,7 @@
         "@salutejs/client": "1.21.3",
         "@types/jest": "26.0.22",
         "@types/uuid": "8.3.0",
+        "auto": "11.0.0",
         "jest": "26.6.3",
         "prettier": "3.0.0",
         "rollup": "2.61.1",
@@ -36,7 +37,8 @@
         "clean": "rm -rf lib",
         "dev": "tsc --watch",
         "prepublishOnly": "rm -rf ./lib tsconfig.tsbuildinfo && npm test && tsc",
-        "test": "jest"
+        "test": "jest",
+        "release": "git diff && auto shipit"
     },
     "files": [
         "lib"
