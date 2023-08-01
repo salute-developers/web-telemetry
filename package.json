@@ -1,6 +1,6 @@
 {
     "name": "@salutejs/web-telemetry",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "Web performance monitoring",
     "main": "lib/index.js",
     "repository": {
@@ -40,7 +40,9 @@
         "test": "jest",
         "release": "git diff && auto shipit"
     },
-    "files": ["lib"],
+    "files": [
+        "lib"
+    ],
     "contributors": [],
     "publishConfig": {
         "access": "public"
