@@ -2,7 +2,7 @@ name: Semgrep
 
 on:
   pull_request:
-    branches: ["dev"]
+    branches: ["main"]
 
 permissions:
   actions: read
