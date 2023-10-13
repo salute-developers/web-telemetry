@@ -1,6 +1,6 @@
 {
     "name": "@salutejs/web-telemetry",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "Web performance monitoring",
     "main": "lib/index.js",
     "repository": {
