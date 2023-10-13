@@ -18,7 +18,7 @@
         "@babel/preset-typescript": "7.13.0",
         "@rollup/plugin-node-resolve": "13.1.1",
         "@rollup/plugin-typescript": "8.3.0",
-        "@salutejs/client": "1.21.3",
+        "@salutejs/client": "1.26.1",
         "@types/jest": "26.0.22",
         "@types/uuid": "8.3.0",
         "auto": "11.0.0",
