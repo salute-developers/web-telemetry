@@ -1,8 +1,13 @@
-import { validatePerformanceEntry } from './WebTelemetryResources';
+import { validatePerformanceEntry, VIDEO_URLs } from './WebTelemetryResources';
 
 describe('presets', () => {
     describe('WebTelemetryResources:validatePerformanceEntry', () => {
-        const firstBlackList = [/api\.amplitude\.com/, /ingest\.sentry\.io/, /mc\.yandex\.ru/];
+        const firstBlackList = [
+            /api\.amplitude\.com/,
+            /ingest\.sentry\.io/,
+            /mc\.yandex\.ru/,
+            VIDEO_URLs
+        ];
         const secondBlackList = [/img\.smotreshka\.tv/, /static\.okko\.tv/];
 
         const validator = validatePerformanceEntry(firstBlackList, secondBlackList);
@@ -11,6 +16,7 @@ describe('presets', () => {
             { name: 'https://yandex.ru/' },
             { name: 'https://sberdevices.ru/' },
             { name: ' http://static.appercode.com/sbercode/quest/leader.html' },
+            { name: ' http://static.appercode.com/my_ump4.jpg' },
         ] as PerformanceEntry[];
 
         const unadvisableEntres = [
@@ -22,6 +28,9 @@ describe('presets', () => {
             },
             {
                 name: 'https://mc.yandex.ru/webvisor/87707055?wmode=0&wv-part=24',
+            },
+            {
+                name: 'https://example.com/my-video.mp4',
             },
         ] as PerformanceEntry[];
 
