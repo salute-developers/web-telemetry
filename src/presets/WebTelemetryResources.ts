@@ -26,7 +26,16 @@ const FIELDS_TO_EXTRACT = [
     'decodedBodySize',
 ] as const;
 
-const PERMANENT_URLS_BLACKLIST = [/api\.amplitude\.com/, /ingest\.sentry\.io/, /mc\.yandex\.ru/];
+// regexp for video from https://debugpointer.com/regex/regex-for-file-extension
+export const VIDEO_URLs =
+    /(^.*\.(mp4|avi|wmv|mov|flv|mkv|webm|vob|ogv|m4v|3gp|3g2|mpeg|mpg|m2v|m4v|svi|3gpp|3gpp2|mxf|roq|nsv|flv|f4v|f4p|f4a|f4b)$)/gim;
+
+const PERMANENT_URLS_BLACKLIST = [
+    /api\.amplitude\.com/,
+    /ingest\.sentry\.io/,
+    /mc\.yandex\.ru/,
+    VIDEO_URLs
+];
 
 export const validatePerformanceEntry = (...args: RegExp[][]) => {
     const flatArgs = args.flat();
@@ -36,7 +45,7 @@ export const validatePerformanceEntry = (...args: RegExp[][]) => {
     };
 };
 
-interface WebTelemetryResourcesData extends Partial<Record<typeof FIELDS_TO_EXTRACT[number], string | number>> {
+interface WebTelemetryResourcesData extends Partial<Record<(typeof FIELDS_TO_EXTRACT)[number], string | number>> {
     hostname: string;
     project: string;
     path: string;
