@@ -1,3 +1,15 @@
+# v1.0.3 (Thu Oct 19 2023)
+
+#### 🐛 Bug Fix
+
+- (SPEED-962): This adding various video formats to blacklist [#7](https://github.com/salute-developers/web-telemetry/pull/7) ([@SeanSilke](https://github.com/SeanSilke))
+
+#### Authors: 1
+
+- Sergey Orlov ([@SeanSilke](https://github.com/SeanSilke))
+
+---
+
 # v1.0.2 (Fri Oct 13 2023)
 
 #### 🐛 Bug Fix
