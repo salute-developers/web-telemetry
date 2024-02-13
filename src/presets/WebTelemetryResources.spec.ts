@@ -14,7 +14,6 @@ describe('presets', () => {
 
         const desiredEntres = [
             { name: 'https://yandex.ru/' },
-            { name: 'https://sberdevices.ru/' },
             { name: ' http://static.appercode.com/sbercode/quest/leader.html' },
             { name: ' http://static.appercode.com/my_ump4.jpg' },
         ] as PerformanceEntry[];

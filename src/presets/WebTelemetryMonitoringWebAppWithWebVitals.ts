@@ -3,7 +3,7 @@ import { getLCP, getFID, getCLS, getFCP } from 'web-vitals';
 import { WebTelemetryExtendedConfig } from '../types';
 
 export class WebTelemetryMonitoringWebAppWithWebVitals extends WebTelemetryMonitoringWeb {
-    private constructor(config: WebTelemetryExtendedConfig) {
+    protected constructor(config: WebTelemetryExtendedConfig) {
         super(config);
     }
     protected static _instance: WebTelemetryMonitoringWebAppWithWebVitals;
