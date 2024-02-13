@@ -3,7 +3,7 @@ import { getLCP, getFID, getCLS, getFCP } from 'web-vitals';
 import { WebTelemetryAddon, WebTelemetryExtendedConfig } from '../types';
 
 export class WebTelemetryMonitoringCanvasWithWebVitals extends WebTelemetryMonitoringCanvas {
-    private constructor(config: WebTelemetryExtendedConfig, addons: Array<WebTelemetryAddon> = []) {
+    protected constructor(config: WebTelemetryExtendedConfig, addons: Array<WebTelemetryAddon> = []) {
         super(config, addons);
     }
     protected static _instance: WebTelemetryMonitoringCanvasWithWebVitals;

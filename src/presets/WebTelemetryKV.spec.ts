@@ -10,7 +10,7 @@ describe('presets', () => {
 
         beforeEach(() => {
             inst = new WebTelemetryKV({
-                projectName: 'b2b-showcase',
+                projectName: 'projectName',
                 debug: true,
             });
         });
