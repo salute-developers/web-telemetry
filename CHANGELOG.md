@@ -1,3 +1,21 @@
+# v1.0.4 (Wed Feb 14 2024)
+
+#### 🐛 Bug Fix
+
+- fix: removed external monitoring and slightly changed some interfaces [#9](https://github.com/salute-developers/web-telemetry/pull/9) ([@SeanSilke](https://github.com/SeanSilke))
+
+#### 🔩 Dependency Updates
+
+- Bump @babel/traverse from 7.17.9 to 7.23.2 [#8](https://github.com/salute-developers/web-telemetry/pull/8) ([@dependabot[bot]](https://github.com/dependabot[bot]))
+- Bump tough-cookie from 4.0.0 to 4.1.3 [#3](https://github.com/salute-developers/web-telemetry/pull/3) ([@dependabot[bot]](https://github.com/dependabot[bot]))
+
+#### Authors: 2
+
+- [@dependabot[bot]](https://github.com/dependabot[bot])
+- Sergey Orlov ([@SeanSilke](https://github.com/SeanSilke))
+
+---
+
 # v1.0.3 (Thu Oct 19 2023)
 
 #### 🐛 Bug Fix
