@@ -1,8 +1,5 @@
+import Timers from 'node:timers/promises';
 import { WebTelemetryKV } from './WebTelemetryKV';
-
-function delay(ms: number) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
-}
 
 describe('presets', () => {
     describe('WebTelemetryKV', () => {
@@ -51,7 +48,7 @@ describe('presets', () => {
         it('should create span', async () => {
             const span = inst.createSpan('span');
 
-            await delay(1500);
+            await Timers.scheduler.wait(1500);
 
             const duration = span.end();
 

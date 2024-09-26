@@ -30,12 +30,7 @@ const FIELDS_TO_EXTRACT = [
 export const VIDEO_URLs =
     /(^.*\.(mp4|avi|wmv|mov|flv|mkv|webm|vob|ogv|m4v|3gp|3g2|mpeg|mpg|m2v|m4v|svi|3gpp|3gpp2|mxf|roq|nsv|flv|f4v|f4p|f4a|f4b)$)/gim;
 
-const PERMANENT_URLS_BLACKLIST = [
-    /api\.amplitude\.com/,
-    /ingest\.sentry\.io/,
-    /mc\.yandex\.ru/,
-    VIDEO_URLs
-];
+const PERMANENT_URLS_BLACKLIST = [/api\.amplitude\.com/, /ingest\.sentry\.io/, /mc\.yandex\.ru/, VIDEO_URLs];
 
 export const validatePerformanceEntry = (...args: RegExp[][]) => {
     const flatArgs = args.flat();
@@ -120,7 +115,10 @@ export class WebTelemetryResources extends WebTelemetryBase<WebTelemetryResource
         }
         try {
             if (WebTelemetryResources.observer) {
-                WebTelemetryResources.observer.observe({ type: 'resource', buffered: true });
+                WebTelemetryResources.observer.observe({
+                    type: 'resource',
+                    buffered: true,
+                });
                 this.isObservationStarted = true;
             }
             // eslint-disable-next-line no-empty

@@ -49,6 +49,12 @@ export class WebTelemetryMonitoringCanvas {
     }
 
     public static Instance(config: WebTelemetryExtendedConfig) {
-        return this._instance || (this._instance = new WebTelemetryMonitoringCanvas({ ...defaultConfig, ...config }));
+        return (
+            this._instance ||
+            (this._instance = new WebTelemetryMonitoringCanvas({
+                ...defaultConfig,
+                ...config,
+            }))
+        );
     }
 }

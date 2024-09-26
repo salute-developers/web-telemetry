@@ -2,12 +2,7 @@ import { validatePerformanceEntry, VIDEO_URLs } from './WebTelemetryResources';
 
 describe('presets', () => {
     describe('WebTelemetryResources:validatePerformanceEntry', () => {
-        const firstBlackList = [
-            /api\.amplitude\.com/,
-            /ingest\.sentry\.io/,
-            /mc\.yandex\.ru/,
-            VIDEO_URLs
-        ];
+        const firstBlackList = [/api\.amplitude\.com/, /ingest\.sentry\.io/, /mc\.yandex\.ru/, VIDEO_URLs];
         const secondBlackList = [/img\.smotreshka\.tv/, /static\.okko\.tv/];
 
         const validator = validatePerformanceEntry(firstBlackList, secondBlackList);
@@ -21,7 +16,9 @@ describe('presets', () => {
         const unadvisableEntres = [
             { name: 'https://ingest.sentry.io/' },
             { name: 'https://api.amplitude.com/' },
-            { name: 'https://static.okko.tv/images/v2/17213101?size=784x456&quality=75' },
+            {
+                name: 'https://static.okko.tv/images/v2/17213101?size=784x456&quality=75',
+            },
             {
                 name: 'http://img.smotreshka.tv/image/aHR0cDovL2ltZy5iNjEyLnRpZ2h0dmlkZW8uY29tL2NoYW5uZWxzL2themFraF90dl9uZXcucG5n?width=784&height=456',
             },

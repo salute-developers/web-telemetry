@@ -1,45 +1,49 @@
 {
-    "name": "@salutejs/web-telemetry",
-    "version": "1.0.4",
-    "description": "Web performance monitoring",
-    "main": "lib/index.js",
-    "repository": {
-        "type": "git",
-        "url": "git+ssh://git@github.com/salute-developers/web-telemetry.git"
-    },
-    "author": "Salute Frontend Team <salute.developers@gmail.com>",
-    "license": "MIT",
-    "dependencies": {
-        "uuid": "8.3.2",
-        "web-vitals": "2.1.2"
-    },
-    "devDependencies": {
-        "@babel/preset-env": "7.13.12",
-        "@babel/preset-typescript": "7.13.0",
-        "@salutejs/client": "1.26.1",
-        "@types/jest": "26.0.22",
-        "@types/uuid": "8.3.0",
-        "auto": "11.0.0",
-        "jest": "26.6.3",
-        "prettier": "3.0.0",
-        "tslib": "2.3.1",
-        "typescript": "4.1.4"
-    },
-    "scripts": {
-        "prepare": "npm run build",
-        "build:cjs": "npm run clean && tsc",
-        "build": "npm run build:cjs",
-        "clean": "rm -rf lib",
-        "dev": "tsc --watch",
-        "prepublishOnly": "rm -rf ./lib tsconfig.tsbuildinfo && npm test && tsc",
-        "test": "jest",
-        "release": "git diff && auto shipit"
-    },
-    "files": [
-        "lib"
-    ],
-    "contributors": [],
-    "publishConfig": {
-        "access": "public"
-    }
+  "name": "@salutejs/web-telemetry",
+  "version": "1.0.4",
+  "description": "Web performance monitoring",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/salute-developers/web-telemetry.git"
+  },
+  "license": "MIT",
+  "author": "Salute Frontend Team <salute.developers@gmail.com>",
+  "contributors": [],
+  "type": "module",
+  "main": "lib/index.js",
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "build": "npm run build:cjs",
+    "build:cjs": "npm run clean && tsc",
+    "clean": "rm -rf lib",
+    "dev": "tsc --watch",
+    "fmt": "prettier --write .",
+    "fmt:check": "prettier --check **/*.{json,md,yaml,yml,ts,js}",
+    "prepare": "npm run build",
+    "prepublishOnly": "rm -rf ./lib tsconfig.tsbuildinfo && npm test && tsc",
+    "release": "git diff && auto shipit",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "uuid": "10.0.0",
+    "web-vitals": "4.2.3"
+  },
+  "devDependencies": {
+    "@salutejs/client": "1.35.3",
+    "@salutejs/prettier-config": "0.4.0",
+    "@types/node": "22.7.2",
+    "@types/uuid": "10.0.0",
+    "auto": "11.2.1",
+    "jsdom": "25.0.1",
+    "prettier": "3.3.3",
+    "prettier-plugin-packagejson": "2.5.2",
+    "typescript": "5.6.2",
+    "vitest": "2.1.1"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
 }

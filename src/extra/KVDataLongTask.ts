@@ -82,6 +82,8 @@ export class KVDataLongTask implements WebTelemetryKVData {
             this.end();
         };
 
-        document.addEventListener('visibilitychange', handleVisibilityChange, { once: true });
+        document.addEventListener('visibilitychange', handleVisibilityChange, {
+            once: true,
+        });
     }
 }

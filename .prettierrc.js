@@ -1,24 +1,15 @@
-module.exports = {
-    arrowParens: 'always',
-    printWidth: 120,
-    jsxBracketSameLine: false,
-    jsxSingleQuote: false,
-    endOfLine: 'auto',
-    semi: true,
-    singleQuote: true,
-    tabWidth: 4,
-    trailingComma: 'all',
+import salutejsPrettierConfig from '@salutejs/prettier-config';
+
+const { parser, ...config } = salutejsPrettierConfig;
+
+export default {
+    ...config,
+    plugins: ['prettier-plugin-packagejson'],
     overrides: [
         {
-            files: ['*.js', '*.ts', '*.jsx', '*.tsx'],
+            files: '*.{json,md,yaml,yml}',
             options: {
-                parser: 'typescript',
-            },
-        },
-        {
-            files: ['*.json'],
-            options: {
-                parser: 'json',
+                tabWidth: 2,
             },
         },
     ],

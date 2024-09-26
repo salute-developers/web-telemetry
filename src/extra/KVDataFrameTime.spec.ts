@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { WebTelemetryKV } from '../presets/WebTelemetryKV';
 import { WebTelemetryTransport } from '../types';
 import { KVDataFrameTime, MinFrameTreshold } from './KVDataFrameTime';
@@ -49,9 +50,9 @@ describe('KVDataFrameTime', () => {
     beforeEach(() => {
         rafCounter = 0;
 
-        global.performance.now = jest.fn();
+        global.performance.now = vi.fn();
 
-        jest.spyOn(document, 'addEventListener').mockImplementation((_, callback) => {
+        vi.spyOn(document, 'addEventListener').mockImplementation((_, callback) => {
             endCallback = callback as any;
         });
     });
@@ -65,7 +66,7 @@ describe('KVDataFrameTime', () => {
         const performanceData = new Array(rafCallLimit + 1).fill(0).map((_, i) => i ** 2);
         let performanceCallCounter = 0;
 
-        jest.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => {
+        vi.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => {
             if (rafCounter++ === rafCallLimit && endCallback) {
                 endCallback();
 
@@ -79,7 +80,7 @@ describe('KVDataFrameTime', () => {
             return 0;
         });
 
-        global.performance.now = jest.fn(() => {
+        global.performance.now = vi.fn(() => {
             return performanceData[performanceCallCounter++];
         });
 
