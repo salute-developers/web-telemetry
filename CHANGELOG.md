@@ -1,3 +1,15 @@
+# v2.0.0 (Thu Sep 26 2024)
+
+#### 💥 Breaking Change
+
+- feat: update web-vitals and add INP metric [#12](https://github.com/salute-developers/web-telemetry/pull/12) ([@arsenykruglikov](https://github.com/arsenykruglikov))
+
+#### Authors: 1
+
+- Arseny Kruglikov ([@arsenykruglikov](https://github.com/arsenykruglikov))
+
+---
+
 # v1.0.4 (Wed Feb 14 2024)
 
 #### 🐛 Bug Fix
