@@ -49,6 +49,12 @@ export class WebTelemetryMonitoringWeb {
     }
 
     public static Instance(config: WebTelemetryExtendedConfig) {
-        return this._instance || (this._instance = new WebTelemetryMonitoringWeb({ ...defaultConfig, ...config }));
+        return (
+            this._instance ||
+            (this._instance = new WebTelemetryMonitoringWeb({
+                ...defaultConfig,
+                ...config,
+            }))
+        );
     }
 }

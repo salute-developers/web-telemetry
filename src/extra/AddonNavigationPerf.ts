@@ -33,7 +33,7 @@ const ENTRIES_TO_SAVE = [
     'workerStart',
 ] as const;
 
-type AddonNavigationPerfData = Partial<Record<typeof ENTRIES_TO_SAVE[number], string | number>>;
+type AddonNavigationPerfData = Partial<Record<(typeof ENTRIES_TO_SAVE)[number], string | number>>;
 
 export class AddonNavigationPerf implements WebTelemetryAddon<AddonNavigationPerfData, {}> {
     private static observer: PerformanceObserver | undefined;
@@ -46,7 +46,10 @@ export class AddonNavigationPerf implements WebTelemetryAddon<AddonNavigationPer
             if (!AddonNavigationPerf.observer) {
                 try {
                     AddonNavigationPerf.observer = new PerformanceObserver(handler);
-                    AddonNavigationPerf.observer.observe({ type: 'navigation', buffered: true });
+                    AddonNavigationPerf.observer.observe({
+                        type: 'navigation',
+                        buffered: true,
+                    });
                     // eslint-disable-next-line no-empty
                 } catch (e) {}
             }

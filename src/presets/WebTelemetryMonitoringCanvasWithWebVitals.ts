@@ -1,5 +1,5 @@
 import { WebTelemetryMonitoringCanvas } from './WebTelemetryMonitoringCanvas';
-import { getLCP, getFID, getCLS, getFCP } from 'web-vitals';
+import { onLCP, onFID, onCLS, onFCP, onINP } from 'web-vitals';
 import { WebTelemetryAddon, WebTelemetryExtendedConfig } from '../types';
 
 export class WebTelemetryMonitoringCanvasWithWebVitals extends WebTelemetryMonitoringCanvas {
@@ -9,7 +9,7 @@ export class WebTelemetryMonitoringCanvasWithWebVitals extends WebTelemetryMonit
     protected static _instance: WebTelemetryMonitoringCanvasWithWebVitals;
 
     public startWebVitals() {
-        [getFCP, getLCP, getFID, getCLS].forEach((getMetric) => {
+        [onLCP, onFID, onCLS, onFCP, onINP].forEach((getMetric) => {
             getMetric(({ name, value }) => this.KV.push({ key: name, value: Math.round(value) }));
         });
     }
