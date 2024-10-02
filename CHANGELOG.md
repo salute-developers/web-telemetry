@@ -1,3 +1,15 @@
+# v2.0.1 (Wed Oct 02 2024)
+
+#### 🐛 Bug Fix
+
+- fix: migrate from CJS to ESM [#13](https://github.com/salute-developers/web-telemetry/pull/13) ([@arsenykruglikov](https://github.com/arsenykruglikov))
+
+#### Authors: 1
+
+- Arseny Kruglikov ([@arsenykruglikov](https://github.com/arsenykruglikov))
+
+---
+
 # v2.0.0 (Thu Sep 26 2024)
 
 #### 💥 Breaking Change
