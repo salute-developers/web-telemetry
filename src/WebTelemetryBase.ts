@@ -7,9 +7,10 @@ import {
     WebTelemetryTransport,
     KVDataItem,
 } from './types';
-import { WebTelemetryTransportDebug, WebTelemetryTransportDefault } from './WebTelemetryTransport';
+import { WebTelemetryTransportDefault } from './transport/WebTelemetryTransport';
 import { globalSessionId } from './constants';
 import { stringifyCircularObj } from './helpers';
+import { WebTelemetryTransportDebug } from './transport/WebTelemetryTransportDebug';
 
 /**
  * Базовая имплементация класса для работы с телеметрией

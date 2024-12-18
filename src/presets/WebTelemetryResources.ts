@@ -1,3 +1,4 @@
+import { SALUTE_EYE_URL } from '../transport/WebTelemetryTransport';
 import { WebTelemetryResourcesConfig, WebTelemetryTransport } from '../types';
 import { WebTelemetryBase } from '../WebTelemetryBase';
 
@@ -81,7 +82,12 @@ export class WebTelemetryResources extends WebTelemetryBase<WebTelemetryResource
              * на отправку данных в бекенд. Если этого не сделать, то шедулер будет
              * бесконечно планировать отправку данных после любой отправки данных
              */
-            if (res.name && this.config.endpoint && res.name.includes(this.config.endpoint)) {
+            if (
+                res.name &&
+                (this.config.endpoint || SALUTE_EYE_URL) &&
+                [this.config.endpoint, SALUTE_EYE_URL].some((url) => res.name.includes(url))
+            ) {
+                //
                 // eslint-disable-next-line no-continue
                 continue;
             }
