@@ -25,11 +25,9 @@ export class WebTelemetryTransportDefault implements WebTelemetryTransport {
 
         if (navigator.sendBeacon) {
             navigator.sendBeacon(this.url, body);
-            fetch(SALUTE_EYE_URL + getLastPartAfterSlash(this.url), {
-                method: 'POST',
-                headers: headers,
-                body: body,
-            });
+            const blob = new Blob([body], { type: headers['Content-Type'] });
+
+            navigator.sendBeacon(SALUTE_EYE_URL + getLastPartAfterSlash(this.url), blob);
         } else {
             fetch(this.url, { body, method: 'POST' });
             fetch(SALUTE_EYE_URL + getLastPartAfterSlash(this.url), {
