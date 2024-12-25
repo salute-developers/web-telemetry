@@ -23,15 +23,22 @@ export class WebTelemetryMonitoringCanvas {
     ) {
         this.canvasApp = new WebTelemetryCanvasApp(config, addons, transports);
 
-        this.KV = new WebTelemetryKV({
-            ...config,
-            projectName: `${config.projectName}-metrics`,
-        });
+        this.KV = new WebTelemetryKV(
+            {
+                ...config,
+                projectName: `${config.projectName}-metrics`,
+            },
+            transports,
+        );
 
-        this.resources = new WebTelemetryResources(config.projectName, {
-            ...config,
-            projectName: `${config.projectName}-resources`,
-        });
+        this.resources = new WebTelemetryResources(
+            config.projectName,
+            {
+                ...config,
+                projectName: `${config.projectName}-resources`,
+            },
+            transports,
+        );
 
         this.longTask = new KVDataLongTask(this.KV);
 

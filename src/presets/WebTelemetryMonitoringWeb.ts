@@ -20,15 +20,22 @@ export class WebTelemetryMonitoringWeb {
     protected constructor(config: WebTelemetryExtendedConfig, transports?: Array<WebTelemetryTransport>) {
         this.webApp = new WebTelemetryWebApp(config, transports);
 
-        this.KV = new WebTelemetryKV({
-            ...config,
-            projectName: `${config.projectName}-metrics`,
-        });
+        this.KV = new WebTelemetryKV(
+            {
+                ...config,
+                projectName: `${config.projectName}-metrics`,
+            },
+            transports,
+        );
 
-        this.resources = new WebTelemetryResources(config.projectName, {
-            ...config,
-            projectName: `${config.projectName}-resources`,
-        });
+        this.resources = new WebTelemetryResources(
+            config.projectName,
+            {
+                ...config,
+                projectName: `${config.projectName}-resources`,
+            },
+            transports,
+        );
 
         this.longTask = new KVDataLongTask(this.KV);
 
