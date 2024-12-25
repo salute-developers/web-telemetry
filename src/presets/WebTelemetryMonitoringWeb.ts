@@ -52,10 +52,13 @@ export class WebTelemetryMonitoringWeb {
     public static Instance(config: WebTelemetryExtendedConfig, transports?: Array<WebTelemetryTransport>) {
         return (
             this._instance ||
-            (this._instance = new WebTelemetryMonitoringWeb({
-                ...defaultConfig,
-                ...config,
-            }, transports))
+            (this._instance = new WebTelemetryMonitoringWeb(
+                {
+                    ...defaultConfig,
+                    ...config,
+                },
+                transports,
+            ))
         );
     }
 }

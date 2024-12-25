@@ -16,7 +16,11 @@ export class WebTelemetryMonitoringCanvas {
     private longTask: KVDataLongTask;
     private frameTime: KVDataFrameTime | undefined;
 
-    protected constructor(config: WebTelemetryExtendedConfig, transports?: Array<WebTelemetryTransport>, addons: Array<WebTelemetryAddon> = []) {
+    protected constructor(
+        config: WebTelemetryExtendedConfig,
+        transports?: Array<WebTelemetryTransport>,
+        addons: Array<WebTelemetryAddon> = [],
+    ) {
         this.canvasApp = new WebTelemetryCanvasApp(config, addons, transports);
 
         this.KV = new WebTelemetryKV({
@@ -51,10 +55,13 @@ export class WebTelemetryMonitoringCanvas {
     public static Instance(config: WebTelemetryExtendedConfig, transports?: Array<WebTelemetryTransport>) {
         return (
             this._instance ||
-            (this._instance = new WebTelemetryMonitoringCanvas({
-                ...defaultConfig,
-                ...config,
-            }, transports))
+            (this._instance = new WebTelemetryMonitoringCanvas(
+                {
+                    ...defaultConfig,
+                    ...config,
+                },
+                transports,
+            ))
         );
     }
 }
