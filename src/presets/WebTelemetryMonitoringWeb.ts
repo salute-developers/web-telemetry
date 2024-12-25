@@ -5,6 +5,7 @@ import { WebTelemetryResources } from './WebTelemetryResources';
 import { KVDataLongTask } from '../extra/KVDataLongTask';
 import { KVDataFrameTime } from '../extra/KVDataFrameTime';
 import { defaultConfig } from '../config';
+import { WebTelemetryTransport } from '../WebTelemetryTransport';
 
 export class WebTelemetryMonitoringWeb {
     protected static _instance: WebTelemetryMonitoringWeb;
@@ -16,8 +17,8 @@ export class WebTelemetryMonitoringWeb {
     private longTask: KVDataLongTask;
     private frameTime: KVDataFrameTime | undefined;
 
-    protected constructor(config: WebTelemetryExtendedConfig) {
-        this.webApp = new WebTelemetryWebApp(config);
+    protected constructor(config: WebTelemetryExtendedConfig, transports?: Array<WebTelemetryTransport>) {
+        this.webApp = new WebTelemetryWebApp(config, transports);
 
         this.KV = new WebTelemetryKV({
             ...config,
@@ -48,13 +49,13 @@ export class WebTelemetryMonitoringWeb {
         this.frameTime?.startMonitoring();
     }
 
-    public static Instance(config: WebTelemetryExtendedConfig) {
+    public static Instance(config: WebTelemetryExtendedConfig, transports?: Array<WebTelemetryTransport>) {
         return (
             this._instance ||
             (this._instance = new WebTelemetryMonitoringWeb({
                 ...defaultConfig,
                 ...config,
-            }))
+            }, transports))
         );
     }
 }
