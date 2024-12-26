@@ -1,10 +1,14 @@
 import { WebTelemetryMonitoringCanvas } from './WebTelemetryMonitoringCanvas';
 import { onLCP, onFID, onCLS, onFCP, onINP } from 'web-vitals';
-import { WebTelemetryAddon, WebTelemetryExtendedConfig } from '../types';
+import { WebTelemetryAddon, WebTelemetryExtendedConfig, WebTelemetryTransport } from '../types';
 
 export class WebTelemetryMonitoringCanvasWithWebVitals extends WebTelemetryMonitoringCanvas {
-    protected constructor(config: WebTelemetryExtendedConfig, addons: Array<WebTelemetryAddon> = []) {
-        super(config, addons);
+    protected constructor(
+        config: WebTelemetryExtendedConfig,
+        transports?: Array<WebTelemetryTransport>,
+        addons: Array<WebTelemetryAddon> = [],
+    ) {
+        super(config, transports, addons);
     }
     protected static _instance: WebTelemetryMonitoringCanvasWithWebVitals;
 
@@ -14,7 +18,14 @@ export class WebTelemetryMonitoringCanvasWithWebVitals extends WebTelemetryMonit
         });
     }
 
-    public static Instance(config: WebTelemetryExtendedConfig, addons: Array<WebTelemetryAddon> = []) {
-        return this._instance || (this._instance = new WebTelemetryMonitoringCanvasWithWebVitals(config, addons));
+    public static Instance(
+        config: WebTelemetryExtendedConfig,
+        transports?: Array<WebTelemetryTransport>,
+        addons: Array<WebTelemetryAddon> = [],
+    ) {
+        return (
+            this._instance ||
+            (this._instance = new WebTelemetryMonitoringCanvasWithWebVitals(config, transports, addons))
+        );
     }
 }
