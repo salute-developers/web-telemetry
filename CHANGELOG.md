@@ -1,3 +1,15 @@
+# v2.0.2 (Thu Dec 26 2024)
+
+#### 🐛 Bug Fix
+
+- added transport in costructors [#16](https://github.com/salute-developers/web-telemetry/pull/16) ([@pamellix](https://github.com/pamellix))
+
+#### Authors: 1
+
+- Paul ([@pamellix](https://github.com/pamellix))
+
+---
+
 # v2.0.1 (Wed Oct 02 2024)
 
 #### 🐛 Bug Fix
