@@ -8,4 +8,8 @@ export declare global {
             firstSmartAppDataMid?: string;
         };
     }
+
+    interface Navigator {
+        userAgentData: userAgentUIData
+    }
 }
