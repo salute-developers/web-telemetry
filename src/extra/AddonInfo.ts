@@ -12,9 +12,9 @@ interface AddonInfoMetadata {
 }
 
 interface userAgentDataValues {
-    model: string,
-    platform: string,
-    platformVersion: string
+    model: string;
+    platform: string;
+    platformVersion: string;
 }
 
 export class AddonInfo implements WebTelemetryAddon<AddonInfoData, AddonInfoMetadata> {
@@ -28,62 +28,62 @@ export class AddonInfo implements WebTelemetryAddon<AddonInfoData, AddonInfoMeta
 
     private async getHighEntropyValues() {
         const highEntropyValues: userAgentDataValues = await navigator.userAgentData.getHighEntropyValues([
-            "architecture",
-            "model",
-            "platform",
-            "platformVersion",
-            "fullVersionList",
+            'architecture',
+            'model',
+            'platform',
+            'platformVersion',
+            'fullVersionList',
         ]);
-        
+
         return highEntropyValues;
     }
-    
+
     metadata() {
         const userAgent = navigator.userAgent;
         let ua: AddonInfoMetadata = {
             osVersion: this.getOsVersion(userAgent),
-            deviceModel: this.getDeviceModel(userAgent)
+            deviceModel: this.getDeviceModel(userAgent),
         };
 
-        this.getHighEntropyValues().then((data) => {
-            ua = {
-                osVersion: `${data.platform} ${data.platformVersion}`,
-                deviceModel: `${data.model}`
-            }
-        }).catch(() => {})
-     
+        this.getHighEntropyValues()
+            .then((data) => {
+                ua = {
+                    osVersion: `${data.platform} ${data.platformVersion}`,
+                    deviceModel: `${data.model}`,
+                };
+            })
+            .catch(() => {});
+
         return ua;
     }
-    
+
     private getOsVersion(userAgent: string): string {
-        const osMatches = userAgent.match(
-            /Windows NT \d+\.\d+|Mac OS X \d+_\d+|iPhone OS \d+_\d+|Android \d+\.\d+/
-        );
-      
-        if (!osMatches) return "";
-      
+        const osMatches = userAgent.match(/Windows NT \d+\.\d+|Mac OS X \d+_\d+|iPhone OS \d+_\d+|Android \d+\.\d+/);
+
+        if (!osMatches) return '';
+
         const osString = osMatches[0];
-      
+
         switch (true) {
-            case osString.startsWith("Windows"):
-                return osString.replace("Windows NT ", "");
-            
-            case osString.startsWith("Mac"):
-                return osString.replace("Mac OS X ", "").replace("_", ".");
-            
-            case osString.startsWith("iPhone"):
-                return osString.replace("iPhone OS ", "").replace("_", ".");
-            
-            case osString.startsWith("Android"):
-                return osString.replace("Android ", "");
-            
+            case osString.startsWith('Windows'):
+                return osString.replace('Windows NT ', '');
+
+            case osString.startsWith('Mac'):
+                return osString.replace('Mac OS X ', '').replace('_', '.');
+
+            case osString.startsWith('iPhone'):
+                return osString.replace('iPhone OS ', '').replace('_', '.');
+
+            case osString.startsWith('Android'):
+                return osString.replace('Android ', '');
+
             default:
-                return "";
+                return '';
         }
-    };
+    }
 
     private getDeviceModel(userAgent: string): string {
-        const match = userAgent.match(/$.*$/)
+        const match = userAgent.match(/$.*$/);
         return match ? match[0].replace('(', '').replace(')', '') : 'Unknown Device Model';
     }
 }

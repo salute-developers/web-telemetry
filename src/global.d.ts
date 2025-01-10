@@ -10,6 +10,6 @@ export declare global {
     }
 
     interface Navigator {
-        userAgentData: userAgentUIData
+        userAgentData: userAgentUIData;
     }
 }
