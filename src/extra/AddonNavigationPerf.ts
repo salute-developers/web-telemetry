@@ -71,11 +71,11 @@ export class AddonNavigationPerf implements WebTelemetryAddon<AddonNavigationPer
         }
     }
 
-    data() {
+    async data() {
         return { ...this.value };
     }
 
-    metadata() {
+    async metadata() {
         return {};
     }
 }
