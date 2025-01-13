@@ -18,7 +18,7 @@ const fakeTransport = new (class implements WebTelemetryTransport {
     }
 
     async subscribe() {
-        return this.subscriber;
+        return await this.subscriber;
     }
 })();
 
@@ -86,6 +86,7 @@ describe('KVDataFrameTime', () => {
 
         kvDataFrameTime.startMonitoring();
         const data = JSON.parse(await fakeTransport.subscribe());
+        console.log(data);
         const avg = data.find((x: any) => x.key === 'AvgFrameTime');
         const firstQuantile = data.find((x: any) => x.key === '1%FrameTime');
 

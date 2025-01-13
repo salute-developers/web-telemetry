@@ -16,8 +16,8 @@ export interface WebTelemetryTransport {
 }
 
 export interface WebTelemetryAddon<T extends {} = {}, M extends {} = {}> {
-    data(): T;
-    metadata(): M;
+    data(): Promise<T>;
+    metadata(): Promise<M>;
 }
 
 export type KVDataItem<P = { key: string; value: any }, M = Record<string, any>> = {

@@ -74,28 +74,28 @@ export abstract class WebTelemetryBase<P, R> {
         });
     }
 
-    protected sendHandler() {
-        this.callTransport([...this.events]);
+    protected sendHandler(events: WebTelemetryBaseEvent[]) {
+        this.callTransport(events);
     }
 
     /**
      * Планирует отправку данных на сервер
      */
-    protected scheduleSend() {
+    protected async scheduleSend() {
         clearTimeout(this.timer);
 
         if (this.config.buffSize && this.events.length >= this.config.buffSize) {
-            this.sendHandler();
+            this.sendHandler(this.events);
             this.events = [];
         } else {
-            this.timer = window.setTimeout(() => {
-                this.sendHandler();
+            this.timer = window.setTimeout(async () => {
+                this.sendHandler(this.events);
                 this.events = [];
             }, this.config.delay);
         }
     }
 
-    protected createEvent<M>(payload: P, meta?: M): WebTelemetryBaseEvent {
+    protected async createEvent<M>(payload: P, meta?: M): Promise<WebTelemetryBaseEvent> {
         let evt: WebTelemetryBaseEvent = {
             sessionId: globalSessionId,
             ...this.payloadToJSON(payload),
@@ -104,10 +104,15 @@ export abstract class WebTelemetryBase<P, R> {
         let evtMetadata = meta || {};
 
         for (const addon of this.addons) {
-            const data = addon.data();
-            const metadata = addon.metadata();
-            evt = Object.assign({}, data, evt);
-            evtMetadata = Object.assign({}, metadata, evtMetadata);
+            const [data, metadata] = await Promise.allSettled([addon.data(), addon.metadata()]);
+
+            if (data.status === 'fulfilled') {
+                evt = Object.assign({}, data.value, evt);
+            }
+
+            if (metadata.status === 'fulfilled') {
+                evtMetadata = Object.assign({}, metadata.value, evtMetadata);
+            }
         }
 
         evt.metadata = stringifyCircularObj(evtMetadata);
@@ -115,16 +120,16 @@ export abstract class WebTelemetryBase<P, R> {
         return evt;
     }
 
-    public push<M>(payload: P, meta?: M): WebTelemetryBaseEvent {
+    public async push<M>(payload: P, meta?: M): Promise<WebTelemetryBaseEvent> {
         if (this.config.disabled) {
             return { sessionId: 'disabled' };
         }
 
-        const evt = this.createEvent(payload, meta);
+        const evt = await this.createEvent(payload, meta);
 
         this.events.push(evt);
 
-        this.scheduleSend();
+        await this.scheduleSend();
 
         return evt;
     }
@@ -133,14 +138,14 @@ export abstract class WebTelemetryBase<P, R> {
      * Вызывайте этот метод, если хотите отправить данные сразу.
      * Иначе вам нужен push, который батчит отправку данных.
      */
-    public pushListAndSend<M>(list: KVDataItem<P, M>[]) {
+    public async pushListAndSend<M>(list: KVDataItem<P, M>[]) {
         const events = [];
         for (const { payload, meta } of list) {
             let evt;
             if (this.config.disabled) {
                 evt = { sessionId: 'disabled' };
             } else {
-                evt = this.createEvent(payload, meta);
+                evt = await this.createEvent(payload, meta);
             }
             events.push(evt);
         }

@@ -17,75 +17,47 @@ interface userAgentDataValues {
     platformVersion: string;
 }
 
-export class AddonInfo implements WebTelemetryAddon<AddonInfoData & AddonInfoMetadata, {}> {
-    data(): AddonInfoData & AddonInfoMetadata {
-        const userAgent = navigator.userAgent;
-        let ua: AddonInfoMetadata = {
-            osVersion: this.getOsVersion(userAgent),
-            deviceModel: this.getDeviceModel(userAgent),
-        };
-
-        this.getHighEntropyValues()
-            .then((data) => {
-                ua = {
-                    osVersion: `${data.platform} ${data.platformVersion}`,
-                    deviceModel: `${data.model}`,
-                };
-            })
-            .catch(() => {});
-
+export class AddonInfo implements WebTelemetryAddon<AddonInfoData, AddonInfoMetadata> {
+    async data(): Promise<AddonInfoData> {
         return {
             hostname: window.location.hostname,
             path: window.location.href,
-            ua: userAgent.toString(),
-            osVersion: ua.osVersion,
-            deviceModel: ua.deviceModel,
+            ua: navigator.userAgent.toString(),
         };
     }
 
-    private async getHighEntropyValues() {
-        const highEntropyValues: userAgentDataValues = await navigator.userAgentData.getHighEntropyValues([
-            'architecture',
-            'model',
-            'platform',
-            'platformVersion',
-            'fullVersionList',
-        ]);
+    private async getHighEntropyValues(): Promise<userAgentDataValues | null> {
+        if (!navigator?.userAgentData?.getHighEntropyValues) {
+            return Promise.resolve(null);
+        }
 
-        return highEntropyValues;
-    }
-
-    metadata() {
-        return {};
-    }
-
-    private getOsVersion(userAgent: string): string {
-        const osMatches = userAgent.match(/Windows NT \d+\.\d+|Mac OS X \d+_\d+|iPhone OS \d+_\d+|Android \d+\.\d+/);
-
-        if (!osMatches) return '';
-
-        const osString = osMatches[0];
-
-        switch (true) {
-            case osString.startsWith('Windows'):
-                return osString.replace('Windows NT ', '');
-
-            case osString.startsWith('Mac'):
-                return osString.replace('Mac OS X ', '').replace('_', '.');
-
-            case osString.startsWith('iPhone'):
-                return osString.replace('iPhone OS ', '').replace('_', '.');
-
-            case osString.startsWith('Android'):
-                return osString.replace('Android ', '');
-
-            default:
-                return '';
+        try {
+            return await navigator.userAgentData.getHighEntropyValues([
+                'architecture',
+                'model',
+                'platform',
+                'platformVersion',
+                'fullVersionList',
+            ]);
+        } catch (error) {
+            console.error('Ошибка high entropy values:', error);
+            return Promise.resolve(null);
         }
     }
 
-    private getDeviceModel(userAgent: string): string {
-        const match = userAgent.match(/$.*$/);
-        return match ? match[0].replace('(', '').replace(')', '') : 'Unknown Device Model';
+    async metadata() {
+        const userAgentData = await this.getHighEntropyValues();
+
+        if (userAgentData) {
+            return {
+                osVersion: `${userAgentData?.platform} ${userAgentData?.platformVersion}`,
+                deviceModel: `${userAgentData?.model}`,
+            };
+        } else {
+            return {
+                osVersion: '',
+                deviceModel: '',
+            };
+        }
     }
 }

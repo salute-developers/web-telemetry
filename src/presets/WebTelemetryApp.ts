@@ -52,7 +52,7 @@ export class WebTelemetryApp extends WebTelemetryBase<WebTelemetryAppEvent, WebT
         this.callTransport(event);
     }
 
-    public push(): WebTelemetryBaseEvent {
+    public async push(): Promise<WebTelemetryBaseEvent> {
         throw new Error('Not implemented for "WebTelemetryApp"');
     }
 

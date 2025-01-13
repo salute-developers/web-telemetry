@@ -10,6 +10,6 @@ export declare global {
     }
 
     interface Navigator {
-        userAgentData: Record<string, any>;
+        userAgentData?: Record<string, any>;
     }
 }

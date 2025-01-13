@@ -2,21 +2,21 @@ import { WebTelemetryAddon } from './types';
 import { WebTelemetryBase } from './WebTelemetryBase';
 
 class Addon1 implements WebTelemetryAddon<{ addon1Data: string }, { addon1Metadata: string }> {
-    data() {
+    async data() {
         return { addon1Data: 'addon1Data' };
     }
 
-    metadata() {
+    async metadata() {
         return { addon1Metadata: 'addon1Metadata' };
     }
 }
 
 class Addon2 implements WebTelemetryAddon<{ addon2Data: string }, { addon2Metadata: string }> {
-    data() {
+    async data() {
         return { addon2Data: 'addon2Data' };
     }
 
-    metadata() {
+    async metadata() {
         return { addon2Metadata: 'addon2Metadata' };
     }
 }
@@ -26,11 +26,12 @@ class WebTelemetry<T> extends WebTelemetryBase<T, T> {
         return payload;
     }
 
-    protected scheduleSend() {
+    protected async scheduleSend() {
         // do nothing
     }
 
     public getEvents() {
+        console.log(this.events);
         return this.events;
     }
 }
@@ -49,7 +50,7 @@ describe('WebTelemetryBase', () => {
             );
         });
 
-        it('should merge data and metadata', () => {
+        it('should merge data and metadata', async () => {
             const expectedData = {
                 data: 'data',
                 addon1Data: 'addon1Data',
@@ -62,7 +63,7 @@ describe('WebTelemetryBase', () => {
                 addon2Metadata: 'addon2Metadata',
             };
 
-            instance.push({ data: 'data' }, { metadata: 'metadata' });
+            await instance.push({ data: 'data' }, { metadata: 'metadata' });
             const { metadata, ...actualData } = instance.getEvents()[0];
 
             expect(actualData).toMatchObject(expectedData);
