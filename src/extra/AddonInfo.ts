@@ -17,12 +17,29 @@ interface userAgentDataValues {
     platformVersion: string;
 }
 
-export class AddonInfo implements WebTelemetryAddon<AddonInfoData, AddonInfoMetadata> {
-    data(): AddonInfoData {
+export class AddonInfo implements WebTelemetryAddon<AddonInfoData & AddonInfoMetadata, {}> {
+    data(): AddonInfoData & AddonInfoMetadata {
+        const userAgent = navigator.userAgent;
+        let ua: AddonInfoMetadata = {
+            osVersion: this.getOsVersion(userAgent),
+            deviceModel: this.getDeviceModel(userAgent),
+        };
+
+        this.getHighEntropyValues()
+            .then((data) => {
+                ua = {
+                    osVersion: `${data.platform} ${data.platformVersion}`,
+                    deviceModel: `${data.model}`,
+                };
+            })
+            .catch(() => {});
+
         return {
             hostname: window.location.hostname,
             path: window.location.href,
-            ua: navigator.userAgent.toString(),
+            ua: userAgent.toString(),
+            osVersion: ua.osVersion,
+            deviceModel: ua.deviceModel,
         };
     }
 
@@ -39,22 +56,7 @@ export class AddonInfo implements WebTelemetryAddon<AddonInfoData, AddonInfoMeta
     }
 
     metadata() {
-        const userAgent = navigator.userAgent;
-        let ua: AddonInfoMetadata = {
-            osVersion: this.getOsVersion(userAgent),
-            deviceModel: this.getDeviceModel(userAgent),
-        };
-
-        this.getHighEntropyValues()
-            .then((data) => {
-                ua = {
-                    osVersion: `${data.platform} ${data.platformVersion}`,
-                    deviceModel: `${data.model}`,
-                };
-            })
-            .catch(() => {});
-
-        return ua;
+        return {};
     }
 
     private getOsVersion(userAgent: string): string {
