@@ -11,12 +11,6 @@ interface AddonInfoMetadata {
     deviceModel: string;
 }
 
-interface userAgentDataValues {
-    model: string;
-    platform: string;
-    platformVersion: string;
-}
-
 export class AddonInfo implements WebTelemetryAddon<AddonInfoData & AddonInfoMetadata, {}> {
     data(): AddonInfoData & AddonInfoMetadata {
         const userAgent = navigator.userAgent;
