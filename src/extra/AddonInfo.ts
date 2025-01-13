@@ -44,15 +44,13 @@ export class AddonInfo implements WebTelemetryAddon<AddonInfoData & AddonInfoMet
     }
 
     private async getHighEntropyValues() {
-        const highEntropyValues: userAgentDataValues = await navigator.userAgentData.getHighEntropyValues([
+        return await navigator.userAgentData.getHighEntropyValues([
             'architecture',
             'model',
             'platform',
             'platformVersion',
             'fullVersionList',
         ]);
-
-        return highEntropyValues;
     }
 
     metadata() {
