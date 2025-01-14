@@ -2,22 +2,22 @@ import { WebTelemetryAddon } from './types';
 import { WebTelemetryBase } from './WebTelemetryBase';
 
 class Addon1 implements WebTelemetryAddon<{ addon1Data: string }, { addon1Metadata: string }> {
-    async data() {
-        return { addon1Data: 'addon1Data' };
+    data() {
+        return Promise.resolve({ addon1Data: 'addon1Data' });
     }
 
-    async metadata() {
-        return { addon1Metadata: 'addon1Metadata' };
+    metadata() {
+        return Promise.resolve({ addon1Metadata: 'addon1Metadata' });
     }
 }
 
 class Addon2 implements WebTelemetryAddon<{ addon2Data: string }, { addon2Metadata: string }> {
-    async data() {
-        return { addon2Data: 'addon2Data' };
+    data() {
+        return Promise.resolve({ addon2Data: 'addon2Data' });
     }
 
-    async metadata() {
-        return { addon2Metadata: 'addon2Metadata' };
+    metadata() {
+        return Promise.resolve({ addon2Metadata: 'addon2Metadata' });
     }
 }
 
@@ -31,8 +31,7 @@ class WebTelemetry<T> extends WebTelemetryBase<T, T> {
     }
 
     public getEvents() {
-        console.log(this.events);
-        return this.events;
+        return this.resolvedEvents;
     }
 }
 
@@ -64,6 +63,7 @@ describe('WebTelemetryBase', () => {
             };
 
             await instance.push({ data: 'data' }, { metadata: 'metadata' });
+
             const { metadata, ...actualData } = instance.getEvents()[0];
 
             expect(actualData).toMatchObject(expectedData);

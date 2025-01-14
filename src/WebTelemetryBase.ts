@@ -9,6 +9,7 @@ import {
 } from './types';
 import { WebTelemetryTransportDebug, WebTelemetryTransportDefault } from './WebTelemetryTransport';
 import { globalSessionId } from './constants';
+import { v4 as uuidv4 } from 'uuid';
 import { stringifyCircularObj } from './helpers';
 
 /**
@@ -18,7 +19,11 @@ export abstract class WebTelemetryBase<P, R> {
     /**
      * Список событий, которые будут отправлены на сервер
      */
-    protected events: Array<WebTelemetryBaseEvent> = [];
+    protected eventsMap: Map<String, Promise<WebTelemetryBaseEvent>> = new Map();
+
+    protected resolvedEvents: Array<WebTelemetryBaseEvent> = [];
+
+    protected eventStarted: boolean = false;
 
     protected config: WebTelemetryBaseConfig;
 
@@ -81,21 +86,21 @@ export abstract class WebTelemetryBase<P, R> {
     /**
      * Планирует отправку данных на сервер
      */
-    protected async scheduleSend() {
+    protected scheduleSend() {
         clearTimeout(this.timer);
 
-        if (this.config.buffSize && this.events.length >= this.config.buffSize) {
-            this.sendHandler(this.events);
-            this.events = [];
+        if (this.config.buffSize && this.resolvedEvents.length >= this.config.buffSize) {
+            this.sendHandler(this.resolvedEvents);
+            this.resolvedEvents = [];
         } else {
             this.timer = window.setTimeout(async () => {
-                this.sendHandler(this.events);
-                this.events = [];
+                this.sendHandler(this.resolvedEvents);
+                this.resolvedEvents = [];
             }, this.config.delay);
         }
     }
 
-    protected async createEvent<M>(payload: P, meta?: M): Promise<WebTelemetryBaseEvent> {
+    protected createEvent<M>(payload: P, meta?: M): Promise<WebTelemetryBaseEvent> {
         let evt: WebTelemetryBaseEvent = {
             sessionId: globalSessionId,
             ...this.payloadToJSON(payload),
@@ -104,32 +109,48 @@ export abstract class WebTelemetryBase<P, R> {
         let evtMetadata = meta || {};
 
         for (const addon of this.addons) {
-            const [data, metadata] = await Promise.allSettled([addon.data(), addon.metadata()]);
+            addon.data().then((result) => {
+                evt = Object.assign({}, result, evt);
+            });
 
-            if (data.status === 'fulfilled') {
-                evt = Object.assign({}, data.value, evt);
-            }
-
-            if (metadata.status === 'fulfilled') {
-                evtMetadata = Object.assign({}, metadata.value, evtMetadata);
-            }
+            addon.metadata().then((result) => {
+                evtMetadata = Object.assign({}, result, evtMetadata);
+            });
         }
 
-        evt.metadata = stringifyCircularObj(evtMetadata);
-
-        return evt;
+        return new Promise<WebTelemetryBaseEvent>((resolve) => {
+            setTimeout(() => {
+                evt.metadata = stringifyCircularObj(evtMetadata);
+                resolve(evt);
+            }, 0);
+        });
     }
 
-    public async push<M>(payload: P, meta?: M): Promise<WebTelemetryBaseEvent> {
+    protected async eventQueue() {
+        if (this.eventStarted && this.eventsMap.size === 0) return;
+        this.eventStarted = true;
+
+        const iterator = this.eventsMap.entries();
+
+        for (const event of iterator) {
+            event[1].then((data) => {
+                this.resolvedEvents.push(data);
+                this.scheduleSend();
+                this.eventsMap.delete(event[0]);
+            });
+        }
+    }
+
+    public push<M>(payload: P, meta?: M): Promise<WebTelemetryBaseEvent> | WebTelemetryBaseEvent {
         if (this.config.disabled) {
             return { sessionId: 'disabled' };
         }
 
-        const evt = await this.createEvent(payload, meta);
+        const evt = this.createEvent(payload, meta);
 
-        this.events.push(evt);
+        this.eventsMap.set(uuidv4(), evt);
 
-        await this.scheduleSend();
+        this.eventQueue();
 
         return evt;
     }
@@ -139,17 +160,19 @@ export abstract class WebTelemetryBase<P, R> {
      * Иначе вам нужен push, который батчит отправку данных.
      */
     public async pushListAndSend<M>(list: KVDataItem<P, M>[]) {
-        const events = [];
+        const eventsPromises = [];
+
         for (const { payload, meta } of list) {
             let evt;
             if (this.config.disabled) {
                 evt = { sessionId: 'disabled' };
             } else {
-                evt = await this.createEvent(payload, meta);
+                evt = this.createEvent(payload, meta);
             }
-            events.push(evt);
+            eventsPromises.push(evt);
         }
 
+        const events = await Promise.all(eventsPromises);
         this.callTransport(events);
     }
 }

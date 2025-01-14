@@ -11,22 +11,24 @@ interface AddonInfoMetadata {
     deviceModel: string;
 }
 
-interface userAgentDataValues {
+interface UserAgentDataValues {
     model: string;
     platform: string;
     platformVersion: string;
 }
 
 export class AddonInfo implements WebTelemetryAddon<AddonInfoData, AddonInfoMetadata> {
-    async data(): Promise<AddonInfoData> {
-        return {
-            hostname: window.location.hostname,
-            path: window.location.href,
-            ua: navigator.userAgent.toString(),
-        };
+    data(): Promise<AddonInfoData> {
+        return new Promise((resolve) => {
+            resolve({
+                hostname: window.location.hostname,
+                path: window.location.href,
+                ua: navigator.userAgent.toString(),
+            });
+        });
     }
 
-    private async getHighEntropyValues(): Promise<userAgentDataValues | null> {
+    private async getHighEntropyValues(): Promise<UserAgentDataValues | null> {
         if (!navigator?.userAgentData?.getHighEntropyValues) {
             return Promise.resolve(null);
         }
@@ -45,19 +47,21 @@ export class AddonInfo implements WebTelemetryAddon<AddonInfoData, AddonInfoMeta
         }
     }
 
-    async metadata() {
-        const userAgentData = await this.getHighEntropyValues();
+    metadata(): Promise<AddonInfoMetadata> {
+        return new Promise(async (resolve) => {
+            const userAgentData = await this.getHighEntropyValues();
 
-        if (userAgentData) {
-            return {
-                osVersion: `${userAgentData?.platform} ${userAgentData?.platformVersion}`,
-                deviceModel: `${userAgentData?.model}`,
-            };
-        } else {
-            return {
-                osVersion: '',
-                deviceModel: '',
-            };
-        }
+            if (userAgentData) {
+                resolve({
+                    osVersion: `${userAgentData.platform} ${userAgentData.platformVersion}`,
+                    deviceModel: `${userAgentData.model}`,
+                });
+            } else {
+                resolve({
+                    osVersion: '',
+                    deviceModel: '',
+                });
+            }
+        });
     }
 }

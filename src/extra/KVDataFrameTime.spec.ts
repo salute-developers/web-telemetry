@@ -86,7 +86,6 @@ describe('KVDataFrameTime', () => {
 
         kvDataFrameTime.startMonitoring();
         const data = JSON.parse(await fakeTransport.subscribe());
-        console.log(data);
         const avg = data.find((x: any) => x.key === 'AvgFrameTime');
         const firstQuantile = data.find((x: any) => x.key === '1%FrameTime');
 
