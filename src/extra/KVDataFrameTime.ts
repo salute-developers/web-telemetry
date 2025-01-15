@@ -91,9 +91,9 @@ export class KVDataFrameTime implements WebTelemetryKVData {
 
         document.addEventListener(
             'visibilitychange',
-            async () => {
+            () => {
                 if (this.frameCounter > MinFrameTreshold) {
-                    await this.KV.pushListAndSend(this.KVdata());
+                    this.KV.pushListAndSend(this.KVdata());
                 }
                 this.endMonitoring();
             },

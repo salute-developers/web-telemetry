@@ -3,21 +3,21 @@ import { WebTelemetryBase } from './WebTelemetryBase';
 
 class Addon1 implements WebTelemetryAddon<{ addon1Data: string }, { addon1Metadata: string }> {
     data() {
-        return Promise.resolve({ addon1Data: 'addon1Data' });
+        return { addon1Data: 'addon1Data' };
     }
 
     metadata() {
-        return Promise.resolve({ addon1Metadata: 'addon1Metadata' });
+        return { addon1Metadata: 'addon1Metadata' };
     }
 }
 
 class Addon2 implements WebTelemetryAddon<{ addon2Data: string }, { addon2Metadata: string }> {
     data() {
-        return Promise.resolve({ addon2Data: 'addon2Data' });
+        return { addon2Data: 'addon2Data' };
     }
 
     metadata() {
-        return Promise.resolve({ addon2Metadata: 'addon2Metadata' });
+        return { addon2Metadata: 'addon2Metadata' };
     }
 }
 
@@ -26,7 +26,7 @@ class WebTelemetry<T> extends WebTelemetryBase<T, T> {
         return payload;
     }
 
-    protected async scheduleSend() {
+    protected scheduleSend() {
         // do nothing
     }
 

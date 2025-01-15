@@ -18,14 +18,12 @@ interface UserAgentDataValues {
 }
 
 export class AddonInfo implements WebTelemetryAddon<AddonInfoData, AddonInfoMetadata> {
-    data(): Promise<AddonInfoData> {
-        return new Promise((resolve) => {
-            resolve({
-                hostname: window.location.hostname,
-                path: window.location.href,
-                ua: navigator.userAgent.toString(),
-            });
-        });
+    data(): AddonInfoData {
+        return {
+            hostname: window.location.hostname,
+            path: window.location.href,
+            ua: navigator.userAgent.toString(),
+        };
     }
 
     private async getHighEntropyValues(): Promise<UserAgentDataValues | null> {

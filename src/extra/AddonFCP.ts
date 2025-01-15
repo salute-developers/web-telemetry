@@ -30,13 +30,13 @@ export class AddonFCP implements WebTelemetryAddon<AddonFCPData, {}> {
         this.value = firstEntry ? firstEntry.startTime : 0;
     }
 
-    async data(): Promise<AddonFCPData> {
+    data(): AddonFCPData {
         return {
             FCP: Math.round(this.value),
         };
     }
 
-    async metadata() {
+    metadata() {
         return {};
     }
 }

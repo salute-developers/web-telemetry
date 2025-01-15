@@ -9,7 +9,6 @@ import {
 } from './types';
 import { WebTelemetryTransportDebug, WebTelemetryTransportDefault } from './WebTelemetryTransport';
 import { globalSessionId } from './constants';
-import { v4 as uuidv4 } from 'uuid';
 import { stringifyCircularObj } from './helpers';
 
 /**
@@ -19,8 +18,6 @@ export abstract class WebTelemetryBase<P, R> {
     /**
      * Список событий, которые будут отправлены на сервер
      */
-    protected eventsMap: Map<String, Promise<WebTelemetryBaseEvent>> = new Map();
-
     protected resolvedEvents: Array<WebTelemetryBaseEvent> = [];
 
     protected eventStarted: boolean = false;
@@ -32,7 +29,6 @@ export abstract class WebTelemetryBase<P, R> {
     protected addons: Array<WebTelemetryAddon> = [];
 
     private timer: number | undefined;
-
     /**
      *
      * @param config конфигурация
@@ -79,8 +75,8 @@ export abstract class WebTelemetryBase<P, R> {
         });
     }
 
-    protected sendHandler(events: WebTelemetryBaseEvent[]) {
-        this.callTransport(events);
+    protected sendHandler() {
+        this.callTransport(this.resolvedEvents);
     }
 
     /**
@@ -90,11 +86,11 @@ export abstract class WebTelemetryBase<P, R> {
         clearTimeout(this.timer);
 
         if (this.config.buffSize && this.resolvedEvents.length >= this.config.buffSize) {
-            this.sendHandler(this.resolvedEvents);
+            this.sendHandler();
             this.resolvedEvents = [];
         } else {
-            this.timer = window.setTimeout(async () => {
-                this.sendHandler(this.resolvedEvents);
+            this.timer = window.setTimeout(() => {
+                this.sendHandler();
                 this.resolvedEvents = [];
             }, this.config.delay);
         }
@@ -109,12 +105,11 @@ export abstract class WebTelemetryBase<P, R> {
         let evtMetadata = meta || {};
 
         for (const addon of this.addons) {
-            addon.data().then((result) => {
-                evt = Object.assign({}, result, evt);
-            });
+            Promise.all([addon.data(), addon.metadata()]).then((results) => {
+                const [dataResult, metadataResult] = results;
 
-            addon.metadata().then((result) => {
-                evtMetadata = Object.assign({}, result, evtMetadata);
+                evt = Object.assign({}, dataResult, evt);
+                evtMetadata = Object.assign({}, metadataResult, evtMetadata);
             });
         }
 
@@ -126,21 +121,6 @@ export abstract class WebTelemetryBase<P, R> {
         });
     }
 
-    protected async eventQueue() {
-        if (this.eventStarted && this.eventsMap.size === 0) return;
-        this.eventStarted = true;
-
-        const iterator = this.eventsMap.entries();
-
-        for (const event of iterator) {
-            event[1].then((data) => {
-                this.resolvedEvents.push(data);
-                this.scheduleSend();
-                this.eventsMap.delete(event[0]);
-            });
-        }
-    }
-
     public push<M>(payload: P, meta?: M): Promise<WebTelemetryBaseEvent> | WebTelemetryBaseEvent {
         if (this.config.disabled) {
             return { sessionId: 'disabled' };
@@ -148,9 +128,10 @@ export abstract class WebTelemetryBase<P, R> {
 
         const evt = this.createEvent(payload, meta);
 
-        this.eventsMap.set(uuidv4(), evt);
-
-        this.eventQueue();
+        evt.then((data) => {
+            this.resolvedEvents.push(data);
+            this.scheduleSend();
+        });
 
         return evt;
     }

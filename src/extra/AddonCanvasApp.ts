@@ -19,7 +19,7 @@ export interface AddonCanvasAppMetadata {
 }
 
 export class AddonCanvasApp implements WebTelemetryAddon<AddonCanvasAppData, AddonCanvasAppMetadata> {
-    async data(): Promise<AddonCanvasAppData> {
+    data(): AddonCanvasAppData {
         const payload: AddonCanvasAppData = {};
 
         if (!window.appInitialData) {
@@ -58,7 +58,7 @@ export class AddonCanvasApp implements WebTelemetryAddon<AddonCanvasAppData, Add
         return payload;
     }
 
-    async metadata() {
+    metadata() {
         const payload: AddonCanvasAppMetadata = {};
 
         if (!window.appInitialData) {
