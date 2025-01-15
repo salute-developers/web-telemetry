@@ -18,7 +18,9 @@ export abstract class WebTelemetryBase<P, R> {
     /**
      * Список событий, которые будут отправлены на сервер
      */
-    protected events: Array<WebTelemetryBaseEvent> = [];
+    protected resolvedEvents: Array<WebTelemetryBaseEvent> = [];
+
+    protected eventStarted: boolean = false;
 
     protected config: WebTelemetryBaseConfig;
 
@@ -27,7 +29,6 @@ export abstract class WebTelemetryBase<P, R> {
     protected addons: Array<WebTelemetryAddon> = [];
 
     private timer: number | undefined;
-
     /**
      *
      * @param config конфигурация
@@ -75,7 +76,7 @@ export abstract class WebTelemetryBase<P, R> {
     }
 
     protected sendHandler() {
-        this.callTransport([...this.events]);
+        this.callTransport(this.resolvedEvents);
     }
 
     /**
@@ -84,18 +85,18 @@ export abstract class WebTelemetryBase<P, R> {
     protected scheduleSend() {
         clearTimeout(this.timer);
 
-        if (this.config.buffSize && this.events.length >= this.config.buffSize) {
+        if (this.config.buffSize && this.resolvedEvents.length >= this.config.buffSize) {
             this.sendHandler();
-            this.events = [];
+            this.resolvedEvents = [];
         } else {
             this.timer = window.setTimeout(() => {
                 this.sendHandler();
-                this.events = [];
+                this.resolvedEvents = [];
             }, this.config.delay);
         }
     }
 
-    protected createEvent<M>(payload: P, meta?: M): WebTelemetryBaseEvent {
+    protected createEvent<M>(payload: P, meta?: M): Promise<WebTelemetryBaseEvent> {
         let evt: WebTelemetryBaseEvent = {
             sessionId: globalSessionId,
             ...this.payloadToJSON(payload),
@@ -104,27 +105,33 @@ export abstract class WebTelemetryBase<P, R> {
         let evtMetadata = meta || {};
 
         for (const addon of this.addons) {
-            const data = addon.data();
-            const metadata = addon.metadata();
-            evt = Object.assign({}, data, evt);
-            evtMetadata = Object.assign({}, metadata, evtMetadata);
+            Promise.all([addon.data(), addon.metadata()]).then((results) => {
+                const [dataResult, metadataResult] = results;
+
+                evt = Object.assign({}, dataResult, evt);
+                evtMetadata = Object.assign({}, metadataResult, evtMetadata);
+            });
         }
 
-        evt.metadata = stringifyCircularObj(evtMetadata);
-
-        return evt;
+        return new Promise<WebTelemetryBaseEvent>((resolve) => {
+            setTimeout(() => {
+                evt.metadata = stringifyCircularObj(evtMetadata);
+                resolve(evt);
+            }, 0);
+        });
     }
 
-    public push<M>(payload: P, meta?: M): WebTelemetryBaseEvent {
+    public push<M>(payload: P, meta?: M): Promise<WebTelemetryBaseEvent> | WebTelemetryBaseEvent {
         if (this.config.disabled) {
             return { sessionId: 'disabled' };
         }
 
         const evt = this.createEvent(payload, meta);
 
-        this.events.push(evt);
-
-        this.scheduleSend();
+        evt.then((data) => {
+            this.resolvedEvents.push(data);
+            this.scheduleSend();
+        });
 
         return evt;
     }
@@ -133,8 +140,9 @@ export abstract class WebTelemetryBase<P, R> {
      * Вызывайте этот метод, если хотите отправить данные сразу.
      * Иначе вам нужен push, который батчит отправку данных.
      */
-    public pushListAndSend<M>(list: KVDataItem<P, M>[]) {
-        const events = [];
+    public async pushListAndSend<M>(list: KVDataItem<P, M>[]) {
+        const eventsPromises = [];
+
         for (const { payload, meta } of list) {
             let evt;
             if (this.config.disabled) {
@@ -142,9 +150,10 @@ export abstract class WebTelemetryBase<P, R> {
             } else {
                 evt = this.createEvent(payload, meta);
             }
-            events.push(evt);
+            eventsPromises.push(evt);
         }
 
+        const events = await Promise.all(eventsPromises);
         this.callTransport(events);
     }
 }

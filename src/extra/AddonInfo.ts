@@ -6,7 +6,18 @@ interface AddonInfoData {
     ua: string;
 }
 
-export class AddonInfo implements WebTelemetryAddon<AddonInfoData, {}> {
+interface AddonInfoMetadata {
+    osVersion: string;
+    deviceModel: string;
+}
+
+interface UserAgentDataValues {
+    model: string;
+    platform: string;
+    platformVersion: string;
+}
+
+export class AddonInfo implements WebTelemetryAddon<AddonInfoData, AddonInfoMetadata> {
     data(): AddonInfoData {
         return {
             hostname: window.location.hostname,
@@ -15,7 +26,40 @@ export class AddonInfo implements WebTelemetryAddon<AddonInfoData, {}> {
         };
     }
 
-    metadata() {
-        return {};
+    private async getHighEntropyValues(): Promise<UserAgentDataValues | null> {
+        if (!navigator?.userAgentData?.getHighEntropyValues) {
+            return Promise.resolve(null);
+        }
+
+        try {
+            return await navigator.userAgentData.getHighEntropyValues([
+                'architecture',
+                'model',
+                'platform',
+                'platformVersion',
+                'fullVersionList',
+            ]);
+        } catch (error) {
+            console.error('Ошибка high entropy values:', error);
+            return Promise.resolve(null);
+        }
+    }
+
+    metadata(): Promise<AddonInfoMetadata> {
+        return new Promise(async (resolve) => {
+            const userAgentData = await this.getHighEntropyValues();
+
+            if (userAgentData) {
+                resolve({
+                    osVersion: `${userAgentData.platform} ${userAgentData.platformVersion}`,
+                    deviceModel: `${userAgentData.model}`,
+                });
+            } else {
+                resolve({
+                    osVersion: '',
+                    deviceModel: '',
+                });
+            }
+        });
     }
 }
