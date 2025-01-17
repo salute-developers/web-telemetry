@@ -2,7 +2,7 @@ export interface WebTelemetryTransport {
     send(body: string): void;
 }
 
-export const SALUTE_EYE_URL = 'https://cbdv.sberdevices.ru/amplitude/telemetry/';
+export const SALUTE_EYE_URL = 'https://clickbeat.sberdevices.ru/amplitude/telemetry';
 
 export class WebTelemetryTransportDefault implements WebTelemetryTransport {
     private url: string;
