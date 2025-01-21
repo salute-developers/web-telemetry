@@ -11,9 +11,16 @@ export class WebTelemetryTransportDefault implements WebTelemetryTransport {
 
     send(body: string) {
         if (navigator.sendBeacon) {
-            navigator.sendBeacon(this.url, body);
+            const blob = new Blob([body], { type: 'application/json' });
+            navigator.sendBeacon(this.url, blob);
         } else {
-            fetch(this.url, { body, method: 'POST' });
+            fetch(this.url, {
+                body,
+                method: 'POST',
+                headers: {
+                    'Content-type': 'application/json',
+                },
+            });
         }
     }
 }
