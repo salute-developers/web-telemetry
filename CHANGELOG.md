@@ -1,3 +1,15 @@
+# v2.0.3 (Tue Jan 21 2025)
+
+#### 🐛 Bug Fix
+
+- feat: update transport with JSON headers [#19](https://github.com/salute-developers/web-telemetry/pull/19) ([@pamellix](https://github.com/pamellix))
+
+#### Authors: 1
+
+- Paul ([@pamellix](https://github.com/pamellix))
+
+---
+
 # v2.0.2 (Thu Dec 26 2024)
 
 #### 🐛 Bug Fix
