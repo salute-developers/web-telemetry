@@ -51,15 +51,15 @@ export class AddonInfo implements WebTelemetryAddon<AddonInfoData, HighEntropyUs
     }
 
     async metadata(): Promise<HighEntropyUserAgentData | AddonInfoMetadata> {
-        const userAgentData = await this.getHighEntropyValues();  
-    
-        if (userAgentData) {  
-            return userAgentData  
-        }  
-    
-        return {  
-            osVersion: '',  
-            deviceModel: '',  
-        };  
-    } 
+        const userAgentData = await this.getHighEntropyValues();
+
+        if (userAgentData) {
+            return userAgentData;
+        }
+
+        return {
+            osVersion: '',
+            deviceModel: '',
+        };
+    }
 }

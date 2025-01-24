@@ -101,37 +101,33 @@ export abstract class WebTelemetryBase<P, R> {
             sessionId: globalSessionId,
             ...this.payloadToJSON(payload),
         };
-    
+
         let evtMetadata = meta || {};
-    
-        const addonPromises = this.addons.map(addon => 
-            Promise.all([addon.data(), addon.metadata()])
-        );
-    
-        return Promise.all(addonPromises)
-            .then(results => {
-                const [finalEvt, finalMetadata] = results.reduce(
-                    ([currentEvt, currentMetadata], [dataResult, metadataResult]) => {
-                        return [
-                            {
-                                ...dataResult,
-                                ...currentEvt,
-                            },
-                            {
-                                ...metadataResult,
-                                ...currentMetadata,
-                            },
-                        ];
-                    },
-                    [{}, evtMetadata]
-                );
-    
-                return {
-                    ...{...evt, ...finalEvt },
-                    metadata: stringifyCircularObj(finalMetadata),
-                };
-    
-            });
+
+        const addonPromises = this.addons.map((addon) => Promise.all([addon.data(), addon.metadata()]));
+
+        return Promise.all(addonPromises).then((results) => {
+            const [finalEvt, finalMetadata] = results.reduce(
+                ([currentEvt, currentMetadata], [dataResult, metadataResult]) => {
+                    return [
+                        {
+                            ...dataResult,
+                            ...currentEvt,
+                        },
+                        {
+                            ...metadataResult,
+                            ...currentMetadata,
+                        },
+                    ];
+                },
+                [{}, evtMetadata],
+            );
+
+            return {
+                ...{ ...evt, ...finalEvt },
+                metadata: stringifyCircularObj(finalMetadata),
+            };
+        });
     }
 
     public push<M>(payload: P, meta?: M): Promise<WebTelemetryBaseEvent> | WebTelemetryBaseEvent {
