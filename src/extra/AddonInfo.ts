@@ -6,18 +6,23 @@ interface AddonInfoData {
     ua: string;
 }
 
+interface HighEntropyUserAgentData {
+    architecture?: string;
+    model?: string;
+    platform?: string;
+    platformVersion?: string;
+    fullVersionList?: Array<{
+        brand: string;
+        version: string;
+    }>;
+}
+
 interface AddonInfoMetadata {
     osVersion: string;
     deviceModel: string;
 }
 
-interface UserAgentDataValues {
-    model: string;
-    platform: string;
-    platformVersion: string;
-}
-
-export class AddonInfo implements WebTelemetryAddon<AddonInfoData, AddonInfoMetadata> {
+export class AddonInfo implements WebTelemetryAddon<AddonInfoData, HighEntropyUserAgentData | AddonInfoMetadata> {
     data(): AddonInfoData {
         return {
             hostname: window.location.hostname,
@@ -26,9 +31,9 @@ export class AddonInfo implements WebTelemetryAddon<AddonInfoData, AddonInfoMeta
         };
     }
 
-    private async getHighEntropyValues(): Promise<UserAgentDataValues | null> {
+    private async getHighEntropyValues(): Promise<HighEntropyUserAgentData | null> {
         if (!navigator?.userAgentData?.getHighEntropyValues) {
-            return Promise.resolve(null);
+            return null;
         }
 
         try {
@@ -41,25 +46,20 @@ export class AddonInfo implements WebTelemetryAddon<AddonInfoData, AddonInfoMeta
             ]);
         } catch (error) {
             console.error('Ошибка high entropy values:', error);
-            return Promise.resolve(null);
+            return null;
         }
     }
 
-    metadata(): Promise<AddonInfoMetadata> {
-        return new Promise(async (resolve) => {
-            const userAgentData = await this.getHighEntropyValues();
-
-            if (userAgentData) {
-                resolve({
-                    osVersion: `${userAgentData.platform} ${userAgentData.platformVersion}`,
-                    deviceModel: `${userAgentData.model}`,
-                });
-            } else {
-                resolve({
-                    osVersion: '',
-                    deviceModel: '',
-                });
-            }
-        });
-    }
+    async metadata(): Promise<HighEntropyUserAgentData | AddonInfoMetadata> {
+        const userAgentData = await this.getHighEntropyValues();  
+    
+        if (userAgentData) {  
+            return userAgentData  
+        }  
+    
+        return {  
+            osVersion: '',  
+            deviceModel: '',  
+        };  
+    } 
 }

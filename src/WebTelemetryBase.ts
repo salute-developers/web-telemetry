@@ -18,7 +18,7 @@ export abstract class WebTelemetryBase<P, R> {
     /**
      * Список событий, которые будут отправлены на сервер
      */
-    protected resolvedEvents: Array<WebTelemetryBaseEvent> = [];
+    protected events: Array<WebTelemetryBaseEvent> = [];
 
     protected eventStarted: boolean = false;
 
@@ -76,7 +76,7 @@ export abstract class WebTelemetryBase<P, R> {
     }
 
     protected sendHandler() {
-        this.callTransport(this.resolvedEvents);
+        this.callTransport(this.events);
     }
 
     /**
@@ -85,13 +85,13 @@ export abstract class WebTelemetryBase<P, R> {
     protected scheduleSend() {
         clearTimeout(this.timer);
 
-        if (this.config.buffSize && this.resolvedEvents.length >= this.config.buffSize) {
+        if (this.config.buffSize && this.events.length >= this.config.buffSize) {
             this.sendHandler();
-            this.resolvedEvents = [];
+            this.events = [];
         } else {
             this.timer = window.setTimeout(() => {
                 this.sendHandler();
-                this.resolvedEvents = [];
+                this.events = [];
             }, this.config.delay);
         }
     }
@@ -101,24 +101,37 @@ export abstract class WebTelemetryBase<P, R> {
             sessionId: globalSessionId,
             ...this.payloadToJSON(payload),
         };
-
+    
         let evtMetadata = meta || {};
-
-        for (const addon of this.addons) {
-            Promise.all([addon.data(), addon.metadata()]).then((results) => {
-                const [dataResult, metadataResult] = results;
-
-                evt = Object.assign({}, dataResult, evt);
-                evtMetadata = Object.assign({}, metadataResult, evtMetadata);
+    
+        const addonPromises = this.addons.map(addon => 
+            Promise.all([addon.data(), addon.metadata()])
+        );
+    
+        return Promise.all(addonPromises)
+            .then(results => {
+                const [finalEvt, finalMetadata] = results.reduce(
+                    ([currentEvt, currentMetadata], [dataResult, metadataResult]) => {
+                        return [
+                            {
+                                ...dataResult,
+                                ...currentEvt,
+                            },
+                            {
+                                ...metadataResult,
+                                ...currentMetadata,
+                            },
+                        ];
+                    },
+                    [{}, evtMetadata]
+                );
+    
+                return {
+                    ...{...evt, ...finalEvt },
+                    metadata: stringifyCircularObj(finalMetadata),
+                };
+    
             });
-        }
-
-        return new Promise<WebTelemetryBaseEvent>((resolve) => {
-            setTimeout(() => {
-                evt.metadata = stringifyCircularObj(evtMetadata);
-                resolve(evt);
-            }, 0);
-        });
     }
 
     public push<M>(payload: P, meta?: M): Promise<WebTelemetryBaseEvent> | WebTelemetryBaseEvent {
@@ -129,7 +142,7 @@ export abstract class WebTelemetryBase<P, R> {
         const evt = this.createEvent(payload, meta);
 
         evt.then((data) => {
-            this.resolvedEvents.push(data);
+            this.events.push(data);
             this.scheduleSend();
         });
 
@@ -140,9 +153,8 @@ export abstract class WebTelemetryBase<P, R> {
      * Вызывайте этот метод, если хотите отправить данные сразу.
      * Иначе вам нужен push, который батчит отправку данных.
      */
-    public async pushListAndSend<M>(list: KVDataItem<P, M>[]) {
-        const eventsPromises = [];
-
+    public pushListAndSend<M>(list: KVDataItem<P, M>[]) {
+        const events = [];
         for (const { payload, meta } of list) {
             let evt;
             if (this.config.disabled) {
@@ -150,10 +162,9 @@ export abstract class WebTelemetryBase<P, R> {
             } else {
                 evt = this.createEvent(payload, meta);
             }
-            eventsPromises.push(evt);
+            events.push(evt);
         }
 
-        const events = await Promise.all(eventsPromises);
         this.callTransport(events);
     }
 }
