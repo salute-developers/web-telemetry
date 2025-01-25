@@ -31,7 +31,7 @@ class WebTelemetry<T> extends WebTelemetryBase<T, T> {
     }
 
     public getEvents() {
-        return this.resolvedEvents;
+        return this.events;
     }
 }
 

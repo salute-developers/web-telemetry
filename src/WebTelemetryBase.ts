@@ -20,8 +20,6 @@ export abstract class WebTelemetryBase<P, R> {
      */
     protected events: Array<WebTelemetryBaseEvent> = [];
 
-    protected eventStarted: boolean = false;
-
     protected config: WebTelemetryBaseConfig;
 
     protected transports: Array<WebTelemetryTransport>;
