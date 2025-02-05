@@ -27,7 +27,6 @@ export abstract class WebTelemetryBase<P, R> {
     protected addons: Array<WebTelemetryAddon> = [];
 
     private timer: number | undefined;
-
     /**
      *
      * @param config конфигурация
@@ -75,7 +74,7 @@ export abstract class WebTelemetryBase<P, R> {
     }
 
     protected sendHandler() {
-        this.callTransport([...this.events]);
+        this.callTransport(this.events);
     }
 
     /**
@@ -95,7 +94,7 @@ export abstract class WebTelemetryBase<P, R> {
         }
     }
 
-    protected createEvent<M>(payload: P, meta?: M): WebTelemetryBaseEvent {
+    protected createEvent<M>(payload: P, meta?: M): Promise<WebTelemetryBaseEvent> {
         let evt: WebTelemetryBaseEvent = {
             sessionId: globalSessionId,
             ...this.payloadToJSON(payload),
@@ -103,28 +102,43 @@ export abstract class WebTelemetryBase<P, R> {
 
         let evtMetadata = meta || {};
 
-        for (const addon of this.addons) {
-            const data = addon.data();
-            const metadata = addon.metadata();
-            evt = Object.assign({}, data, evt);
-            evtMetadata = Object.assign({}, metadata, evtMetadata);
-        }
+        const addonPromises = this.addons.map((addon) => Promise.all([addon.data(), addon.metadata()]));
 
-        evt.metadata = stringifyCircularObj(evtMetadata);
+        return Promise.all(addonPromises).then((results) => {
+            const [finalEvt, finalMetadata] = results.reduce(
+                ([currentEvt, currentMetadata], [dataResult, metadataResult]) => {
+                    return [
+                        {
+                            ...dataResult,
+                            ...currentEvt,
+                        },
+                        {
+                            ...metadataResult,
+                            ...currentMetadata,
+                        },
+                    ];
+                },
+                [{}, evtMetadata],
+            );
 
-        return evt;
+            return {
+                ...{ ...evt, ...finalEvt },
+                metadata: stringifyCircularObj(finalMetadata),
+            };
+        });
     }
 
-    public push<M>(payload: P, meta?: M): WebTelemetryBaseEvent {
+    public push<M>(payload: P, meta?: M): Promise<WebTelemetryBaseEvent> | WebTelemetryBaseEvent {
         if (this.config.disabled) {
             return { sessionId: 'disabled' };
         }
 
         const evt = this.createEvent(payload, meta);
 
-        this.events.push(evt);
-
-        this.scheduleSend();
+        evt.then((data) => {
+            this.events.push(data);
+            this.scheduleSend();
+        });
 
         return evt;
     }

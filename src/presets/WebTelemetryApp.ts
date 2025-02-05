@@ -37,19 +37,31 @@ export class WebTelemetryApp extends WebTelemetryBase<WebTelemetryAppEvent, WebT
     }
 
     protected sendHandler() {
-        for (const addon of this.addons) {
-            const data = addon.data();
-            const metadata = addon.metadata();
-            this.mainEvent = Object.assign({}, data, this.mainEvent);
-            this.metaData = Object.assign({}, metadata, this.metaData);
+        let counter = 0;
+        const totalAddons = this.addons.length;
+
+        if (!totalAddons) {
+            this.callTransport({});
         }
 
-        const event = {
-            ...this.mainEvent,
-            metadata: stringifyCircularObj(this.metaData),
-        };
+        for (const addon of this.addons) {
+            Promise.all([addon.data(), addon.metadata()]).then((results) => {
+                counter++;
 
-        this.callTransport(event);
+                const [dataResult, metadataResult] = results;
+                this.mainEvent = Object.assign({}, dataResult, this.mainEvent);
+                this.metaData = Object.assign({}, metadataResult, this.metaData);
+
+                if (counter === totalAddons) {
+                    const event = {
+                        ...this.mainEvent,
+                        metadata: stringifyCircularObj(this.metaData),
+                    };
+
+                    this.callTransport(event);
+                }
+            });
+        }
     }
 
     public push(): WebTelemetryBaseEvent {

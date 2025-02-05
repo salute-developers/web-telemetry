@@ -17,7 +17,7 @@ const fakeTransport = new (class implements WebTelemetryTransport {
         this.handler(body);
     }
 
-    async subscribe() {
+    subscribe() {
         return this.subscriber;
     }
 })();
