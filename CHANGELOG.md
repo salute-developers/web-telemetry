@@ -1,3 +1,21 @@
+# v2.0.4 (Wed Feb 05 2025)
+
+#### 🐛 Bug Fix
+
+- added attribution to web vitals [#21](https://github.com/salute-developers/web-telemetry/pull/21) (pitagankin@sdnb-mac-00076.local [@pamellix](https://github.com/pamellix))
+
+#### 🔩 Dependency Updates
+
+- Bump vite from 5.4.8 to 5.4.14 [#20](https://github.com/salute-developers/web-telemetry/pull/20) ([@dependabot[bot]](https://github.com/dependabot[bot]))
+
+#### Authors: 3
+
+- [@dependabot[bot]](https://github.com/dependabot[bot])
+- Paul ([@pamellix](https://github.com/pamellix))
+- Таганкин Павел Игоревич (pitagankin@sdnb-mac-00076.local)
+
+---
+
 # v2.0.3 (Tue Jan 21 2025)
 
 #### 🐛 Bug Fix
