@@ -68,11 +68,6 @@ export interface WebTelemetryBaseConfig {
      * Сбор и отправка frame time
      */
     frameTime: boolean;
-
-    /**
-     * Версия телеметрии
-     */
-    telemetryVersion: string
 }
 
 type OptionalExcept<T, K extends keyof T> = Pick<T, K> & Partial<Omit<T, K>>;
