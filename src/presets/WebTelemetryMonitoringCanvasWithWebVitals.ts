@@ -1,6 +1,8 @@
-import { WebTelemetryMonitoringCanvas } from './WebTelemetryMonitoringCanvas';
 import { onLCP, onFID, onCLS, onFCP, onINP } from 'web-vitals/attribution';
+
 import { WebTelemetryAddon, WebTelemetryExtendedConfig, WebTelemetryTransport } from '../types';
+
+import { WebTelemetryMonitoringCanvas } from './WebTelemetryMonitoringCanvas';
 
 export class WebTelemetryMonitoringCanvasWithWebVitals extends WebTelemetryMonitoringCanvas {
     protected constructor(

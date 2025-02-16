@@ -19,7 +19,7 @@ export class KVDataLongTask implements WebTelemetryKVData {
                     KVDataLongTask.observer = new PerformanceObserver(handler);
                     KVDataLongTask.observer.observe({ type: 'longtask', buffered: true });
                     // eslint-disable-next-line no-empty
-                } catch (e) {}
+                } catch (_e) {}
             }
         }
     }

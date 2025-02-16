@@ -6,7 +6,7 @@ interface AddonInfoData {
     ua: string;
 }
 
-export class AddonInfo implements WebTelemetryAddon<AddonInfoData, {}> {
+export class AddonInfo implements WebTelemetryAddon<AddonInfoData, object> {
     data(): AddonInfoData {
         return {
             hostname: window.location.hostname,

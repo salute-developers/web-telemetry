@@ -1,3 +1,10 @@
-import { configBase, configReact, configNextJs, configReactWithCompiler } from '@salutejs/eslint-config/flat';
+import { configBase } from '@salutejs/eslint-config';
 
-export default [...configBase, ...configReact, ...configNextJs, ...configReactWithCompiler];
+export default [
+    ...configBase,
+    {
+        rules: {
+            '@typescript-eslint/no-explicit-any': 'off',
+        },
+    },
+];

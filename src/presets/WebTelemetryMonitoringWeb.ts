@@ -1,11 +1,12 @@
 import { WebTelemetryExtendedConfig } from '../types';
-import { WebTelemetryWebApp } from './WebTelemetryWebApp';
-import { WebTelemetryKV } from './WebTelemetryKV';
-import { WebTelemetryResources } from './WebTelemetryResources';
 import { KVDataLongTask } from '../extra/KVDataLongTask';
 import { KVDataFrameTime } from '../extra/KVDataFrameTime';
 import { defaultConfig } from '../config';
 import { WebTelemetryTransport } from '../WebTelemetryTransport';
+
+import { WebTelemetryResources } from './WebTelemetryResources';
+import { WebTelemetryKV } from './WebTelemetryKV';
+import { WebTelemetryWebApp } from './WebTelemetryWebApp';
 
 export class WebTelemetryMonitoringWeb {
     protected static _instance: WebTelemetryMonitoringWeb;
