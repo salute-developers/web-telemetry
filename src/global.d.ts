@@ -1,7 +1,5 @@
 import { AssistantWindow } from '@salutejs/client';
 
-declare const __VERSION__: string;
-
 export declare global {
     interface Window extends AssistantWindow {
         appInitialData: Record<string, any>;

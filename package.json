@@ -16,7 +16,7 @@
   ],
   "scripts": {
     "build": "npm run build:cjs",
-    "build:cjs": "npm run clean && tsc",
+    "build:cjs": "npm run clean && tsc && node ./generateVersion.cjs",
     "clean": "rm -rf lib",
     "dev": "tsc --watch",
     "fmt": "prettier --write .",
