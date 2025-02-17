@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const packageVersion = fs.readFileSync('./version.txt', 'utf8');
+const packageVersion = fs.readFileSync('./version.txt', 'utf8').trim();
 
 console.log(packageVersion)
 
