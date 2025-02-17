@@ -23,7 +23,7 @@
     "fmt:check": "prettier --check **/*.{json,md,yaml,yml,ts,js}",
     "prepare": "npm run build",
     "prepublishOnly": "rm -rf ./lib tsconfig.tsbuildinfo && npm test && tsc",
-    "release": "git diff && auto shipit -d && auto shipit",
+    "release": "git diff && auto shipit -d | grep 'Would have published' | awk '{print $4}' > new_version.txt && sed -i \"s/export const version = '.*';/export const version = '$(cat new_version.txt)';/\" ./src/version.ts && auto shipit",
     "test": "vitest run",
     "test:watch": "vitest"
   },
