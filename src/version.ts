@@ -1,2 +1,2 @@
 // Этот файл сгенерирован автоматически
-export const version = '2.0.4';
+export const version = '@salutejs/web-telemetry v2.0.4';

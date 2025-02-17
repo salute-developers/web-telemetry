@@ -16,14 +16,14 @@
   ],
   "scripts": {
     "build": "npm run build:cjs",
-    "build:cjs": "npm run clean && tsc && node ./generateVersion.cjs",
+    "build:cjs": "npm run clean",
     "clean": "rm -rf lib",
     "dev": "tsc --watch",
     "fmt": "prettier --write .",
     "fmt:check": "prettier --check **/*.{json,md,yaml,yml,ts,js}",
     "prepare": "npm run build",
     "prepublishOnly": "rm -rf ./lib tsconfig.tsbuildinfo && npm test && tsc",
-    "release": "git diff && pwd && echo \"@salutejs/web-telemetry v2.0.4\" > version.txt && auto shipit",
+    "release": "git diff && auto shipit -d | grep \"Would have published\" | awk '{print $4}' > version.txt && node ./generateVersion.cjs  && auto shipit",
     "test": "vitest run",
     "test:watch": "vitest"
   },
