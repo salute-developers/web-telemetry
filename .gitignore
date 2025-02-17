@@ -3,6 +3,7 @@
 ##### OS FILES
 .DS_Store
 .history
+.version.txt
 
 ##### Editors
 .*.swp
