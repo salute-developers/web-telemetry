@@ -31,7 +31,7 @@
     "forceConsistentCasingInFileNames": true,
     "outDir": "./lib",
     "rootDir": "./src",
-    "types": ["vitest/globals"],
+    "types": ["vitest/globals"]
   },
   "include": ["./src"],
   "exclude": ["node_modules", "**/*.spec.ts", "./lib"]
