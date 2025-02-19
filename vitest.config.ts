@@ -7,7 +7,4 @@ export default defineConfig({
         globals: true,
         environment: 'jsdom',
     },
-    define: {
-        __VERSION__: JSON.stringify(packageJson.version),
-    },
 });

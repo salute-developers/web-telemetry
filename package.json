@@ -13,7 +13,7 @@
   "main": "lib/index.js",
   "files": [
     "lib",
-    "generateVersion.js"
+    "generateVersion.сjs"
   ],
   "scripts": {
     "build": "npm run build:cjs",
