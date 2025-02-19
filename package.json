@@ -12,7 +12,8 @@
   "type": "module",
   "main": "lib/index.js",
   "files": [
-    "lib"
+    "lib",
+    "generateVersion.js"
   ],
   "scripts": {
     "build": "npm run build:cjs",
