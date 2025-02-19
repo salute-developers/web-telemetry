@@ -35,7 +35,7 @@ const ENTRIES_TO_SAVE = [
 
 type AddonNavigationPerfData = Partial<Record<(typeof ENTRIES_TO_SAVE)[number], string | number>>;
 
-export class AddonNavigationPerf implements WebTelemetryAddon<AddonNavigationPerfData, {}> {
+export class AddonNavigationPerf implements WebTelemetryAddon<AddonNavigationPerfData, object> {
     private static observer: PerformanceObserver | undefined;
 
     private value: AddonNavigationPerfData = {};
@@ -51,7 +51,7 @@ export class AddonNavigationPerf implements WebTelemetryAddon<AddonNavigationPer
                         buffered: true,
                     });
                     // eslint-disable-next-line no-empty
-                } catch (e) {}
+                } catch (_e) {}
             }
         }
     }

@@ -15,7 +15,7 @@ export interface WebTelemetryTransport {
     send(body: string): void;
 }
 
-export interface WebTelemetryAddon<T extends {} = {}, M extends {} = {}> {
+export interface WebTelemetryAddon<T extends object = object, M extends object = object> {
     data(): T;
     metadata(): M;
 }

@@ -1,3 +1,5 @@
+import { describe, it, expect, beforeEach } from 'vitest';
+
 import { WebTelemetryAddon } from './types';
 import { WebTelemetryBase } from './WebTelemetryBase';
 

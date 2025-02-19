@@ -1,9 +1,7 @@
-import salutejsPrettierConfig from '@salutejs/prettier-config';
-
-const { parser, ...config } = salutejsPrettierConfig;
+import saluteJsPrettierConfig from '@salutejs/prettier-config';
 
 export default {
-    ...config,
+    ...saluteJsPrettierConfig,
     plugins: ['prettier-plugin-packagejson'],
     overrides: [
         {

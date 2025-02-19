@@ -1,10 +1,11 @@
 import { KVDataFrameTime } from '../extra/KVDataFrameTime';
 import { KVDataLongTask } from '../extra/KVDataLongTask';
 import { WebTelemetryAddon, WebTelemetryExtendedConfig, WebTelemetryTransport } from '../types';
+import { defaultConfig } from '../config';
+
 import { WebTelemetryCanvasApp } from './WebTelemetryCanvasApp';
 import { WebTelemetryKV } from './WebTelemetryKV';
 import { WebTelemetryResources } from './WebTelemetryResources';
-import { defaultConfig } from '../config';
 
 export class WebTelemetryMonitoringCanvas {
     protected static _instance: WebTelemetryMonitoringCanvas;

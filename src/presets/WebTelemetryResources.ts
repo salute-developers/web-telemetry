@@ -122,7 +122,7 @@ export class WebTelemetryResources extends WebTelemetryBase<WebTelemetryResource
                 this.isObservationStarted = true;
             }
             // eslint-disable-next-line no-empty
-        } catch (e) {}
+        } catch (_e) {}
     }
 
     public end() {

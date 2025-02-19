@@ -1,6 +1,8 @@
 import { vi } from 'vitest';
+
 import { WebTelemetryKV } from '../presets/WebTelemetryKV';
 import { WebTelemetryTransport } from '../types';
+
 import { KVDataFrameTime, MinFrameTreshold } from './KVDataFrameTime';
 
 const fakeTransport = new (class implements WebTelemetryTransport {
