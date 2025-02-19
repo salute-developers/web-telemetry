@@ -1,3 +1,15 @@
+# v2.0.5 (Wed Feb 19 2025)
+
+#### 🐛 Bug Fix
+
+- chore: update actions/cache from v1 to v4 [#26](https://github.com/salute-developers/web-telemetry/pull/26) ([@SeanSilke](https://github.com/SeanSilke))
+
+#### Authors: 1
+
+- Sergey Orlov ([@SeanSilke](https://github.com/SeanSilke))
+
+---
+
 # v2.0.4 (Wed Feb 05 2025)
 
 #### 🐛 Bug Fix
