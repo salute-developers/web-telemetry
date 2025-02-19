@@ -33,6 +33,6 @@
     "rootDir": "./src",
     "types": ["vitest/globals"]
   },
-  "include": ["./src", "generateVersion.js"],
+  "include": ["./src", "generateVersion.cjs"],
   "exclude": ["node_modules", "**/*.spec.ts", "./lib"]
 }
