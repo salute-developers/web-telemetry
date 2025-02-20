@@ -32,7 +32,6 @@
     "outDir": "./lib",
     "rootDir": "./src",
     "types": ["vitest/globals"],
-    "resolveJsonModule": true
   },
   "include": ["./src", "generateVersion"],
   "exclude": ["node_modules", "**/*.spec.ts", "./lib"]

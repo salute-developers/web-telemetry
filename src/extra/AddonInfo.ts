@@ -1,4 +1,4 @@
-import { WebTelemetryAddon } from '../types'; // @ts-ignore
+import { WebTelemetryAddon } from '../types';
 import { version } from '../../version.js';
 
 interface AddonInfoData {
