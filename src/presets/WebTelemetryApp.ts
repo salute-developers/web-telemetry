@@ -49,8 +49,6 @@ export class WebTelemetryApp extends WebTelemetryBase<WebTelemetryAppEvent, WebT
             metadata: stringifyCircularObj(this.metaData),
         };
 
-        console.log('semgrep test');
-
         this.callTransport(event);
     }
 
