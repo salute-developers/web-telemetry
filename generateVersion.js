@@ -1,8 +1,8 @@
-const fs = require('fs');
+import { readFileSync } from 'fs';
 
 export let version = '';
 
-const packageVersion = fs.readFileSync('./package.json', 'utf8');
+const packageVersion = readFileSync('./package.json', 'utf8');
 const packageInfo = JSON.parse(packageVersion);
 
 version = packageInfo.version;

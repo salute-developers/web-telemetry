@@ -1,6 +1,5 @@
-import { WebTelemetryAddon } from '../types';
-// @ts-ignore
-import { version } from '../../generateVersion.cjs';
+import { WebTelemetryAddon } from '../types'; // @ts-ignore
+import { version } from '../../generateVersion.js';
 
 interface AddonInfoData {
     hostname: string;
