@@ -1,5 +1,4 @@
 import { WebTelemetryAddon } from '../types';
-import { version } from '../version';
 
 interface AddonInfoData {
     hostname: string;
@@ -18,7 +17,8 @@ export class AddonInfo implements WebTelemetryAddon<AddonInfoData, { telemetryVe
 
     metadata() {
         return {
-            telemetryVersion: version,
+            // @ts-ignore
+            telemetryVersion: global.__WEB_TELEMETRY_VERSION__,
         };
     }
 }
