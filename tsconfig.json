@@ -34,6 +34,8 @@
     "types": ["vitest/globals"],
     "resolveJsonModule": true
   },
-  "include": ["./src", "generateVersion.js"],
+  "include": ["./src",
+    "generateVersion"
+  ],
   "exclude": ["node_modules", "**/*.spec.ts", "./lib"]
 }
