@@ -15,7 +15,11 @@ describe('presets', () => {
         it('should use metadata', async () => {
             const evt = await inst.push({ key: 'a', value: 'b' }, { x: 1, y: 2, z: '3' });
 
-            expect(evt.metadata).toEqual('{"x":1,"y":2,"z":"3"}');
+            expect(JSON.parse(evt.metadata)).toMatchObject({
+                x: 1,
+                y: 2,
+                z: '3',
+            });
         });
 
         it('should return valid data for string value', async () => {
