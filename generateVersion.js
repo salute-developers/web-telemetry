@@ -1,5 +1,5 @@
-import { version } from './package.json';
+import pkg from './package.json' with { type: 'json' };
 
 export let packageVersion = '';
 
-packageVersion = version;
+packageVersion = pkg.version;
