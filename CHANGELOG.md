@@ -1,3 +1,15 @@
+# v2.0.7 (Fri Feb 21 2025)
+
+#### 🐛 Bug Fix
+
+- Changed deprecated version in semgrep [#27](https://github.com/salute-developers/web-telemetry/pull/27) ([@pamellix](https://github.com/pamellix))
+
+#### Authors: 1
+
+- Paul ([@pamellix](https://github.com/pamellix))
+
+---
+
 # v2.0.6 (Thu Feb 20 2025)
 
 #### 🐛 Bug Fix
