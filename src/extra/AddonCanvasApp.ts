@@ -1,5 +1,6 @@
-import { WebTelemetryAddon } from '../types';
 import { AssistantAppContext } from '@salutejs/client';
+
+import { WebTelemetryAddon } from '../types';
 
 type CurrentAssistantAppContext = AssistantAppContext & {
     app_context: {

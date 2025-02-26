@@ -4,7 +4,7 @@ type AddonFCPData = {
     FCP: number;
 };
 
-export class AddonFCP implements WebTelemetryAddon<AddonFCPData, {}> {
+export class AddonFCP implements WebTelemetryAddon<AddonFCPData, object> {
     private static observer: PerformanceObserver | undefined;
 
     private value = 0;
@@ -18,7 +18,7 @@ export class AddonFCP implements WebTelemetryAddon<AddonFCPData, {}> {
                     AddonFCP.observer = new PerformanceObserver(handler);
                     AddonFCP.observer.observe({ type: 'paint', buffered: true });
                     // eslint-disable-next-line no-empty
-                } catch (e) {}
+                } catch (_e) {}
             }
         }
     }

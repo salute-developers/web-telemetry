@@ -1,4 +1,6 @@
+import { describe, it, expect, beforeEach } from 'vitest';
 import Timers from 'node:timers/promises';
+
 import { WebTelemetryKV } from './WebTelemetryKV';
 
 describe('presets', () => {
