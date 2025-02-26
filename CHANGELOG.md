@@ -1,3 +1,15 @@
+# v2.0.8 (Wed Feb 26 2025)
+
+#### 🐛 Bug Fix
+
+- Update eslint [#24](https://github.com/salute-developers/web-telemetry/pull/24) ([@arsenykruglikov](https://github.com/arsenykruglikov))
+
+#### Authors: 1
+
+- Arseny Kruglikov ([@arsenykruglikov](https://github.com/arsenykruglikov))
+
+---
+
 # v2.0.7 (Fri Feb 21 2025)
 
 #### 🐛 Bug Fix
