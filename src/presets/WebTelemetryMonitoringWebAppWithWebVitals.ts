@@ -1,6 +1,8 @@
-import { WebTelemetryMonitoringWeb } from './WebTelemetryMonitoringWeb';
 import { onLCP, onFID, onCLS, onFCP, onINP } from 'web-vitals/attribution';
+
 import { WebTelemetryExtendedConfig, WebTelemetryTransport } from '../types';
+
+import { WebTelemetryMonitoringWeb } from './WebTelemetryMonitoringWeb';
 
 export class WebTelemetryMonitoringWebAppWithWebVitals extends WebTelemetryMonitoringWeb {
     protected constructor(config: WebTelemetryExtendedConfig, transports?: Array<WebTelemetryTransport>) {

@@ -82,7 +82,6 @@ export class WebTelemetryResources extends WebTelemetryBase<WebTelemetryResource
              * бесконечно планировать отправку данных после любой отправки данных
              */
             if (res.name && this.config.endpoint && res.name.includes(this.config.endpoint)) {
-                // eslint-disable-next-line no-continue
                 continue;
             }
 
@@ -122,7 +121,7 @@ export class WebTelemetryResources extends WebTelemetryBase<WebTelemetryResource
                 this.isObservationStarted = true;
             }
             // eslint-disable-next-line no-empty
-        } catch (e) {}
+        } catch (_e) {}
     }
 
     public end() {
