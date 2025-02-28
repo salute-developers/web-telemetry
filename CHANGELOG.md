@@ -1,3 +1,16 @@
+# v2.0.9 (Fri Feb 28 2025)
+
+#### 🐛 Bug Fix
+
+- Added version file fix [#28](https://github.com/salute-developers/web-telemetry/pull/28) ([@pamellix](https://github.com/pamellix) [@SeanSilke](https://github.com/SeanSilke))
+
+#### Authors: 2
+
+- Paul ([@pamellix](https://github.com/pamellix))
+- Sergey Orlov ([@SeanSilke](https://github.com/SeanSilke))
+
+---
+
 # v2.0.8 (Wed Feb 26 2025)
 
 #### 🐛 Bug Fix
