@@ -43,7 +43,7 @@ jobs:
 
       - name: Setup packages
         run: |
-          npm ci
+          npm ci --ignore-scripts
 
       - name: Check code style
         run: npm run fmt:check
