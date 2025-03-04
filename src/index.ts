@@ -1,2 +1,2 @@
-export { WebTelemetry } from './presets/WebTelemetry';
-export * from './types';
+export { WebTelemetry } from './presets/WebTelemetry.js';
+export * from './types.js';

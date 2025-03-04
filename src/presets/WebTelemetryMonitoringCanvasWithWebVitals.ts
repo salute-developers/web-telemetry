@@ -1,8 +1,8 @@
 import { onLCP, onFID, onCLS, onFCP, onINP } from 'web-vitals/attribution';
 
-import { WebTelemetryAddon, WebTelemetryExtendedConfig, WebTelemetryTransport } from '../types';
+import type { WebTelemetryAddon, WebTelemetryExtendedConfig, WebTelemetryTransport } from '../types.js';
 
-import { WebTelemetryMonitoringCanvas } from './WebTelemetryMonitoringCanvas';
+import { WebTelemetryMonitoringCanvas } from './WebTelemetryMonitoringCanvas.js';
 
 export class WebTelemetryMonitoringCanvasWithWebVitals extends WebTelemetryMonitoringCanvas {
     protected constructor(
@@ -12,7 +12,7 @@ export class WebTelemetryMonitoringCanvasWithWebVitals extends WebTelemetryMonit
     ) {
         super(config, transports, addons);
     }
-    protected static _instance: WebTelemetryMonitoringCanvasWithWebVitals;
+    protected static override _instance: WebTelemetryMonitoringCanvasWithWebVitals;
 
     public startWebVitals() {
         [onLCP, onFID, onCLS, onFCP, onINP].forEach((getMetric) => {
@@ -22,7 +22,7 @@ export class WebTelemetryMonitoringCanvasWithWebVitals extends WebTelemetryMonit
         });
     }
 
-    public static Instance(
+    public static override Instance(
         config: WebTelemetryExtendedConfig,
         transports?: Array<WebTelemetryTransport>,
         addons: Array<WebTelemetryAddon> = [],

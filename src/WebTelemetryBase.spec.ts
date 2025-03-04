@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 
-import { WebTelemetryAddon } from './types';
-import { WebTelemetryBase } from './WebTelemetryBase';
+import type { WebTelemetryAddon } from './types.js';
+import { WebTelemetryBase } from './WebTelemetryBase.js';
 
 class Addon1 implements WebTelemetryAddon<{ addon1Data: string }, { addon1Metadata: string }> {
     data() {
@@ -28,7 +28,7 @@ class WebTelemetry<T> extends WebTelemetryBase<T, T> {
         return payload;
     }
 
-    protected scheduleSend() {
+    protected override scheduleSend() {
         // do nothing
     }
 

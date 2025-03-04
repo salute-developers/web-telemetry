@@ -1,4 +1,4 @@
-import { WebTelemetryBaseConfig } from './types';
+import type { WebTelemetryBaseConfig } from './types.js';
 
 export const defaultConfig: WebTelemetryBaseConfig = {
     endpoint: '',

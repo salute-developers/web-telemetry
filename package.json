@@ -17,37 +17,38 @@
     "version.js"
   ],
   "scripts": {
-    "build": "npm run build:cjs",
-    "build:cjs": "npm run clean && tsc",
+    "build": "npm run clean && tsc --erasableSyntaxOnly",
+    "check-types": "tsc --noEmit  --erasableSyntaxOnly",
     "clean": "rm -rf lib",
     "dev": "tsc --watch",
     "fmt": "prettier --write .",
-    "fmt:check": "prettier --check **/*.{json,md,yaml,yml,ts,js}",
+    "fmt:check": "prettier --check .",
     "postinstall": "node generateVersion.cjs",
     "lint": "eslint . --fix",
     "prepare": "npm run build",
-    "prepublishOnly": "rm -rf ./lib tsconfig.tsbuildinfo && npm test && tsc",
+    "prepublishOnly": "rm -rf ./lib && npm test && tsc",
     "release": "git diff && auto shipit",
     "test": "vitest run",
     "test:watch": "vitest"
   },
   "dependencies": {
-    "uuid": "10.0.0",
-    "web-vitals": "4.2.3"
+    "uuid": "11.1.0",
+    "web-vitals": "4.2.4"
   },
   "devDependencies": {
-    "@salutejs/client": "1.35.3",
-    "@salutejs/eslint-config": "3.1.0",
-    "@salutejs/prettier-config": "3.0.0",
-    "@types/node": "22.7.2",
+    "@salutejs/client": "1.35.5",
+    "@salutejs/eslint-config": "3.2.1",
+    "@salutejs/prettier-config": "3.1.0",
+    "@types/node": "22.13.9",
     "@types/uuid": "10.0.0",
     "auto": "11.2.1",
     "eslint": "9.21.0",
     "jsdom": "25.0.1",
-    "prettier": "3.5.2",
-    "typescript": "5.6.2",
+    "prettier": "3.5.3",
+    "typescript": "5.8.2",
     "vitest": "2.1.1"
   },
+  "packageManager": "pnpm@9.15.4+sha512.b2dc20e2fc72b3e18848459b37359a32064663e5627a51e4c74b2c29dd8e8e0491483c3abb40789cfd578bf362fb6ba8261b05f0387d76792ed6e23ea3b1b6a0",
   "publishConfig": {
     "access": "public"
   }

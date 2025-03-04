@@ -1,5 +1,5 @@
-import { WebTelemetryResourcesConfig, WebTelemetryTransport } from '../types';
-import { WebTelemetryBase } from '../WebTelemetryBase';
+import type { WebTelemetryResourcesConfig, WebTelemetryTransport } from '../types.js';
+import { WebTelemetryBase } from '../WebTelemetryBase.js';
 
 const FIELDS_TO_EXTRACT = [
     'name',

@@ -1,9 +1,9 @@
-import { AddonFCP } from '../extra/AddonFCP';
-import { AddonInfo } from '../extra/AddonInfo';
-import { AddonNavigationPerf } from '../extra/AddonNavigationPerf';
-import { WebTelemetryConfig, WebTelemetryTransport } from '../types';
+import { AddonFCP } from '../extra/AddonFCP.js';
+import { AddonInfo } from '../extra/AddonInfo.js';
+import { AddonNavigationPerf } from '../extra/AddonNavigationPerf.js';
+import type { WebTelemetryConfig, WebTelemetryTransport } from '../types.js';
 
-import { WebTelemetryApp } from './WebTelemetryApp';
+import { WebTelemetryApp } from './WebTelemetryApp.js';
 
 export class WebTelemetryWebApp extends WebTelemetryApp {
     constructor(config: WebTelemetryConfig, transports?: Array<WebTelemetryTransport>) {

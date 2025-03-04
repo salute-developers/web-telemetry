@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import Timers from 'node:timers/promises';
 
-import { WebTelemetryKV } from './WebTelemetryKV';
+import { WebTelemetryKV } from './WebTelemetryKV.js';
 
 describe('presets', () => {
     describe('WebTelemetryKV', () => {
@@ -17,7 +17,7 @@ describe('presets', () => {
         it('should use metadata', async () => {
             const evt = await inst.push({ key: 'a', value: 'b' }, { x: 1, y: 2, z: '3' });
 
-            expect(JSON.parse(evt.metadata)).toMatchObject({
+            expect(JSON.parse(evt.metadata ?? '{}')).toMatchObject({
                 x: 1,
                 y: 2,
                 z: '3',

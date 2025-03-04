@@ -1,15 +1,15 @@
-import { defaultConfig } from './config';
-import {
+import { defaultConfig } from './config.js';
+import type {
     WebTelemetryAddon,
     WebTelemetryBaseConfig,
     WebTelemetryConfig,
     WebTelemetryBaseEvent,
     WebTelemetryTransport,
     KVDataItem,
-} from './types';
-import { WebTelemetryTransportDebug, WebTelemetryTransportDefault } from './WebTelemetryTransport';
-import { globalSessionId } from './constants';
-import { stringifyCircularObj } from './helpers';
+} from './types.js';
+import { WebTelemetryTransportDebug, WebTelemetryTransportDefault } from './WebTelemetryTransport.js';
+import { globalSessionId } from './constants.js';
+import { stringifyCircularObj } from './helpers.js';
 
 /**
  * Базовая имплементация класса для работы с телеметрией
