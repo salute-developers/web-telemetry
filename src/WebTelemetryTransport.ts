@@ -3,7 +3,7 @@ export interface WebTelemetryTransport {
 }
 
 export class WebTelemetryTransportDefault implements WebTelemetryTransport {
-    protected url: string;
+    private url: string;
 
     constructor(url: string) {
         this.url = url;
