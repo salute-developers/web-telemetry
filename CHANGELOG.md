@@ -1,3 +1,15 @@
+# v2.0.10 (Tue Mar 04 2025)
+
+#### 🐛 Bug Fix
+
+- Returned an old transport and old logic [#29](https://github.com/salute-developers/web-telemetry/pull/29) ([@pamellix](https://github.com/pamellix))
+
+#### Authors: 1
+
+- Paul ([@pamellix](https://github.com/pamellix))
+
+---
+
 # v2.0.9 (Fri Feb 28 2025)
 
 #### 🐛 Bug Fix
