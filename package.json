@@ -11,7 +11,7 @@
   "contributors": [],
   "type": "module",
   "exports": {
-    ".": "./lib/index.js",
+    ".": "./lib/presets/WebTelemetry.js",
     "./types": "./lib/types.js",
     "./presets/*": "./lib/presets/*.js",
     "./extra/*": "./lib/extra/*.js",

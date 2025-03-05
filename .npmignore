@@ -7,3 +7,6 @@ eslint.config.js
 tsconfig.json
 src
 .github
+lib/**/*.spec.js
+lib/**/*.spec.d.ts
+lib/**/*.spec.js.map
