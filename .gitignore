@@ -7,7 +7,6 @@
 ##### Editors
 .*.swp
 .idea
-.vscode
 .vs
 *.iml
 *.sublime-project
