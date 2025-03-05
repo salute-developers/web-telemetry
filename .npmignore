@@ -1,8 +1,9 @@
 vite.config.ts
-.prettierrc.js
+prettier.config.js
 .prettierignore
-.eslintrc.js
+eslint.config.js
 .nvmrc
+.npmrc
 tsconfig.json
 src
 .github

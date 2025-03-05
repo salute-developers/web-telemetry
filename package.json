@@ -10,10 +10,20 @@
   "author": "Salute Frontend Team <salute.developers@gmail.com>",
   "contributors": [],
   "type": "module",
-  "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./types": "./lib/types.js",
+    "./presets/*": "./lib/presets/*.js",
+    "./extra/*": "./lib/extra/*.js",
+    "./constants": "./lib/constants.js",
+    "./config": "./lib/config.js",
+    "./helpers": "./lib/helpers.js",
+    "./WebTelemetryTransport": "./lib/WebTelemetryTransport.js",
+    "./WebTelemetryBase": "./lib/WebTelemetryBase.js"
+  },
   "files": [
     "lib",
-    "generateVersion.cjs",
+    "generateVersion.js",
     "version.js"
   ],
   "scripts": {
@@ -23,7 +33,7 @@
     "dev": "tsc --watch",
     "fmt": "prettier --write .",
     "fmt:check": "prettier --check .",
-    "postinstall": "node generateVersion.cjs",
+    "postinstall": "node generateVersion.js",
     "lint": "eslint . --fix",
     "prepare": "npm run build",
     "prepublishOnly": "rm -rf ./lib && npm test && tsc",
@@ -40,13 +50,12 @@
     "@salutejs/eslint-config": "3.2.1",
     "@salutejs/prettier-config": "3.1.0",
     "@types/node": "22.13.9",
-    "@types/uuid": "10.0.0",
     "auto": "11.2.1",
     "eslint": "9.21.0",
     "jsdom": "25.0.1",
     "prettier": "3.5.3",
     "typescript": "5.8.2",
-    "vitest": "2.1.1"
+    "vitest": "3.0.7"
   },
   "packageManager": "pnpm@9.15.4+sha512.b2dc20e2fc72b3e18848459b37359a32064663e5627a51e4c74b2c29dd8e8e0491483c3abb40789cfd578bf362fb6ba8261b05f0387d76792ed6e23ea3b1b6a0",
   "publishConfig": {
