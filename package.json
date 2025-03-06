@@ -11,15 +11,15 @@
   "contributors": [],
   "type": "module",
   "exports": {
-    ".": "./lib/presets/WebTelemetry.js",
-    "./types": "./lib/types.js",
-    "./presets/*": "./lib/presets/*.js",
-    "./extra/*": "./lib/extra/*.js",
-    "./constants": "./lib/constants.js",
-    "./config": "./lib/config.js",
-    "./helpers": "./lib/helpers.js",
-    "./WebTelemetryTransport": "./lib/WebTelemetryTransport.js",
-    "./WebTelemetryBase": "./lib/WebTelemetryBase.js"
+    ".": "./esm/presets/WebTelemetry.js",
+    "./types": "./esm/types.js",
+    "./presets/*": "./esm/presets/*.js",
+    "./extra/*": "./esm/extra/*.js",
+    "./constants": "./esm/constants.js",
+    "./config": "./esm/config.js",
+    "./helpers": "./esm/helpers.js",
+    "./WebTelemetryTransport": "./esm/WebTelemetryTransport.js",
+    "./WebTelemetryBase": "./esm/WebTelemetryBase.js"
   },
   "files": [
     "lib",
@@ -27,16 +27,17 @@
     "version.js"
   ],
   "scripts": {
-    "build": "npm run clean && tsc --erasableSyntaxOnly",
+    "build": "npm run clean && tsc --erasableSyntaxOnly && tsc -p tsconfig.cjs.json --erasableSyntaxOnly",
+    "build:cjs": "",
     "check-types": "tsc --noEmit  --erasableSyntaxOnly",
-    "clean": "rm -rf lib",
+    "clean": "rm -rf lib esm",
     "dev": "tsc --watch",
     "fmt": "prettier --write .",
     "fmt:check": "prettier --check .",
     "postinstall": "node generateVersion.js",
     "lint": "eslint . --fix",
     "prepare": "npm run build",
-    "prepublishOnly": "rm -rf ./lib && npm test && tsc",
+    "prepublishOnly": "rm -rf ./lib ./esm && npm test && tsc",
     "release": "git diff && auto shipit",
     "test": "vitest run",
     "test:watch": "vitest"
@@ -57,7 +58,6 @@
     "typescript": "5.8.2",
     "vitest": "3.0.7"
   },
-  "packageManager": "pnpm@9.15.4+sha512.b2dc20e2fc72b3e18848459b37359a32064663e5627a51e4c74b2c29dd8e8e0491483c3abb40789cfd578bf362fb6ba8261b05f0387d76792ed6e23ea3b1b6a0",
   "publishConfig": {
     "access": "public"
   }

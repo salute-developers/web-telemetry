@@ -10,6 +10,6 @@ export default createConfig(
         },
     },
     {
-        ignores: ['lib/*', 'node_modules/*'],
+        ignores: ['lib/*', 'esm/*', 'node_modules/*'],
     },
 );

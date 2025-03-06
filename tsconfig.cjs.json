@@ -5,13 +5,12 @@
     "target": "es2022",
     "moduleDetection": "force",
     "isolatedModules": true,
-    "verbatimModuleSyntax": true,
 
     "strict": true,
     "noImplicitOverride": true,
 
-    "module": "NodeNext",
-    "outDir": "esm",
+    "module": "CommonJS",
+    "outDir": "lib",
     "sourceMap": true,
 
     "declaration": true,
