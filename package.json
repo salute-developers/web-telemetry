@@ -11,15 +11,42 @@
   "contributors": [],
   "type": "module",
   "exports": {
-    ".": "./esm/presets/WebTelemetry.js",
-    "./types": "./esm/types.js",
-    "./presets/*": "./esm/presets/*.js",
-    "./extra/*": "./esm/extra/*.js",
-    "./constants": "./esm/constants.js",
-    "./config": "./esm/config.js",
-    "./helpers": "./esm/helpers.js",
-    "./WebTelemetryTransport": "./esm/WebTelemetryTransport.js",
-    "./WebTelemetryBase": "./esm/WebTelemetryBase.js"
+    "./lib": {
+      "import": "./esm/presets/WebTelemetry.js",
+      "require": "./lib/presets/WebTelemetry.js"
+    },
+    "./lib/types": {
+      "import": "./esm/types.js",
+      "require": "./lib/types.js"
+    },
+    "./lib/presets/*": {
+      "import": "./esm/presets/*.js",
+      "require": "./lib/presets/*.js"
+    },
+    "./lib/extra/*": {
+      "import": "./esm/extra/*.js",
+      "require": "./lib/extra/*.js"
+    },
+    "./lib/constants": {
+      "import": "./esm/constants.js",
+      "require": "./lib/constants.js"
+    },
+    "./lib/config": {
+      "import": "./esm/config.js",
+      "require": "./lib/config.js"
+    },
+    "./lib/helpers": {
+      "import": "./esm/helpers.js",
+      "require": "./lib/helpers.js"
+    },
+    "./lib/WebTelemetryTransport": {
+      "import": "./esm/WebTelemetryTransport.js",
+      "require": "./lib/WebTelemetryTransport.js"
+    },
+    "./lib/WebTelemetryBase": {
+      "import": "./esm/WebTelemetryBase.js",
+      "require": "./lib/WebTelemetryBase.js"
+    }
   },
   "files": [
     "esm",
