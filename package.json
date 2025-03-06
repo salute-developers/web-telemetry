@@ -22,21 +22,20 @@
     "./WebTelemetryBase": "./esm/WebTelemetryBase.js"
   },
   "files": [
-    "lib",
-    "generateVersion.js",
-    "version.js"
+    "esm",
+    "lib"
   ],
   "scripts": {
-    "build": "npm run clean && tsc --erasableSyntaxOnly && tsc -p tsconfig.cjs.json --erasableSyntaxOnly",
-    "build:cjs": "",
-    "check-types": "tsc --noEmit  --erasableSyntaxOnly",
+    "build": "npm run clean && tsc --erasableSyntaxOnly && npm run build:cjs",
+    "build:cjs": "tsc -p tsconfig.cjs.json --erasableSyntaxOnly",
+    "check-types": "tsc --noEmit --erasableSyntaxOnly",
     "clean": "rm -rf lib esm",
     "dev": "tsc --watch",
-    "fmt": "prettier --write .",
-    "fmt:check": "prettier --check .",
-    "postinstall": "node generateVersion.js",
+    "embed-version": "node embedVersion.js",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "lint": "eslint . --fix",
-    "prepare": "npm run build",
+    "prepare": "npm run build && npm run embed-version",
     "prepublishOnly": "rm -rf ./lib ./esm && npm test && tsc",
     "release": "git diff && auto shipit",
     "test": "vitest run",
@@ -53,6 +52,7 @@
     "@types/node": "22.13.9",
     "auto": "11.2.1",
     "eslint": "9.21.0",
+    "glob": "11.0.1",
     "jsdom": "25.0.1",
     "prettier": "3.5.3",
     "typescript": "5.8.2",
