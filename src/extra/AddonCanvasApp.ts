@@ -1,12 +1,4 @@
-import { AssistantAppContext } from '@salutejs/client';
-
-import { WebTelemetryAddon } from '../types';
-
-type CurrentAssistantAppContext = AssistantAppContext & {
-    app_context: {
-        surface: string;
-    };
-};
+import type { WebTelemetryAddon, WindowWithAssistant } from '../types.js';
 
 export interface AddonCanvasAppData {
     messageId?: string;
@@ -23,24 +15,26 @@ export class AddonCanvasApp implements WebTelemetryAddon<AddonCanvasAppData, Add
     data(): AddonCanvasAppData {
         const payload: AddonCanvasAppData = {};
 
-        if (!window.appInitialData) {
+        const reference = window as unknown as WindowWithAssistant;
+
+        if (!reference.appInitialData) {
             return payload;
         }
 
-        const appData = window.appInitialData.find((i: { type: string }) => i.type === 'smart_app_data');
+        const appData = reference.appInitialData.find((item) => item.type === 'smart_app_data');
+
         if (appData) {
-            const messageId = appData.sdkMeta?.mid || appData.sdk_meta?.mid || '';
+            const messageId = appData.sdk_meta?.mid || '';
             if (messageId) {
                 payload.messageId = String(messageId);
             }
-        } else if (window.__ASSISTANT_CLIENT__?.firstSmartAppDataMid) {
-            const messageId = window.__ASSISTANT_CLIENT__?.firstSmartAppDataMid;
+        } else if (reference.__ASSISTANT_CLIENT__?.firstSmartAppDataMid) {
+            const messageId = reference.__ASSISTANT_CLIENT__?.firstSmartAppDataMid;
             payload.messageId = messageId;
         }
 
-        const appContext = window.appInitialData.find(
-            (i: { type: string }) => i.type === 'app_context',
-        ) as CurrentAssistantAppContext;
+        const appContext = reference.appInitialData.find((item) => item.type === 'app_context');
+
         if (appContext) {
             const { device_id, sdk_version, surface } = appContext.app_context;
 
@@ -62,11 +56,14 @@ export class AddonCanvasApp implements WebTelemetryAddon<AddonCanvasAppData, Add
     metadata() {
         const payload: AddonCanvasAppMetadata = {};
 
-        if (!window.appInitialData) {
+        const reference = window as unknown as WindowWithAssistant;
+
+        if (!reference.appInitialData) {
             return payload;
         }
 
-        const appContext = window.appInitialData.find((i: { type: string }) => i.type === 'app_context');
+        const appContext = reference.appInitialData.find((item) => item.type === 'app_context');
+
         if (appContext) {
             const features = appContext.app_context?.features;
             if (features) {

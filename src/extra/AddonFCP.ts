@@ -1,4 +1,4 @@
-import { WebTelemetryAddon } from '../types';
+import type { WebTelemetryAddon } from '../types.js';
 
 type AddonFCPData = {
     FCP: number;

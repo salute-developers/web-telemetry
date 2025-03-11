@@ -1,8 +1,15 @@
 vite.config.ts
-.prettierrc.js
+prettier.config.js
 .prettierignore
-.eslintrc.js
+eslint.config.js
 .nvmrc
+.npmrc
 tsconfig.json
 src
 .github
+lib/**/*.spec.js
+lib/**/*.spec.d.ts
+lib/**/*.spec.js.map
+esm/**/*.spec.js
+esm/**/*.spec.d.ts
+esm/**/*.spec.js.map

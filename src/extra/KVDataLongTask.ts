@@ -1,5 +1,5 @@
-import { WebTelemetryKV } from '../presets/WebTelemetryKV';
-import { KVDataItem, WebTelemetryKVData } from '../types';
+import { WebTelemetryKV } from '../presets/WebTelemetryKV.js';
+import type { KVDataItem, WebTelemetryKVData } from '../types.js';
 
 export class KVDataLongTask implements WebTelemetryKVData {
     private static observer: PerformanceObserver | undefined;
@@ -10,7 +10,11 @@ export class KVDataLongTask implements WebTelemetryKVData {
         meta: {},
     };
 
-    constructor(private KV: WebTelemetryKV) {
+    private KV: WebTelemetryKV;
+
+    constructor(KV: WebTelemetryKV) {
+        this.KV = KV;
+
         if (window.PerformanceObserver) {
             const handler = this.handler.bind(this);
 

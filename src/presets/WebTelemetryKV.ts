@@ -1,6 +1,6 @@
-import { AddonInfo } from '../extra/AddonInfo';
-import { WebTelemetryAddon, WebTelemetryConfig, WebTelemetryTransport, WebTelemetryValue } from '../types';
-import { WebTelemetryBase } from '../WebTelemetryBase';
+import { AddonInfo } from '../extra/AddonInfo.js';
+import type { WebTelemetryAddon, WebTelemetryConfig, WebTelemetryTransport, WebTelemetryValue } from '../types.js';
+import { WebTelemetryBase } from '../WebTelemetryBase.js';
 
 interface WebTelemetryKVPayload {
     key: string;

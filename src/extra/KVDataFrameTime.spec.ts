@@ -1,9 +1,9 @@
-import { vi } from 'vitest';
+import { expect, vi, it, describe, beforeEach } from 'vitest';
 
-import { WebTelemetryKV } from '../presets/WebTelemetryKV';
-import { WebTelemetryTransport } from '../types';
+import { WebTelemetryKV } from '../presets/WebTelemetryKV.js';
+import type { WebTelemetryTransport } from '../types.js';
 
-import { KVDataFrameTime, MinFrameTreshold } from './KVDataFrameTime';
+import { KVDataFrameTime, MinFrameTreshold } from './KVDataFrameTime.js';
 
 const fakeTransport = new (class implements WebTelemetryTransport {
     subscriber: Promise<string> = Promise.resolve('');

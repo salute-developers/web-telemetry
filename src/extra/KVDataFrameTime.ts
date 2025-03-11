@@ -1,5 +1,5 @@
-import { WebTelemetryKV } from '../presets/WebTelemetryKV';
-import { KVDataItem, WebTelemetryKVData } from '../types';
+import { WebTelemetryKV } from '../presets/WebTelemetryKV.js';
+import type { KVDataItem, WebTelemetryKVData } from '../types.js';
 
 export const MinFrameTreshold = 1000;
 
@@ -9,7 +9,11 @@ export class KVDataFrameTime implements WebTelemetryKVData {
     rafId = 0;
     frameTimeMap: Record<number, number> = {};
 
-    constructor(private KV: WebTelemetryKV) {}
+    private KV: WebTelemetryKV;
+
+    constructor(KV: WebTelemetryKV) {
+        this.KV = KV;
+    }
 
     KVdata(): KVDataItem<{ key: string; value: number }>[] {
         return [

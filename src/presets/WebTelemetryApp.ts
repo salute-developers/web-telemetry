@@ -1,13 +1,13 @@
-import { globalSessionId } from '../constants';
-import { stringifyCircularObj } from '../helpers';
-import {
+import { globalSessionId } from '../constants.js';
+import { stringifyCircularObj } from '../helpers.js';
+import type {
     WebTelemetryAddon,
     WebTelemetryBaseEvent,
     WebTelemetryConfig,
     WebTelemetryTransport,
     WebTelemetryValue,
-} from '../types';
-import { WebTelemetryBase } from '../WebTelemetryBase';
+} from '../types.js';
+import { WebTelemetryBase } from '../WebTelemetryBase.js';
 
 type WebTelemetryAppEvent = Record<string, WebTelemetryValue>;
 
@@ -36,7 +36,7 @@ export class WebTelemetryApp extends WebTelemetryBase<WebTelemetryAppEvent, WebT
         return payload;
     }
 
-    protected sendHandler() {
+    protected override sendHandler() {
         for (const addon of this.addons) {
             const data = addon.data();
             const metadata = addon.metadata();
@@ -52,7 +52,7 @@ export class WebTelemetryApp extends WebTelemetryBase<WebTelemetryAppEvent, WebT
         this.callTransport(event);
     }
 
-    public push(): WebTelemetryBaseEvent {
+    public override push(): WebTelemetryBaseEvent {
         throw new Error('Not implemented for "WebTelemetryApp"');
     }
 

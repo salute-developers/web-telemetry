@@ -1,4 +1,4 @@
-import { WebTelemetryAddon } from '../types';
+import type { WebTelemetryAddon } from '../types.js';
 
 const ENTRIES_TO_SAVE = [
     'entryType',

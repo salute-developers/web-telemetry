@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 
-import { validatePerformanceEntry, VIDEO_URLs } from './WebTelemetryResources';
+import { validatePerformanceEntry, VIDEO_URLs } from './WebTelemetryResources.js';
 
 describe('presets', () => {
     describe('WebTelemetryResources:validatePerformanceEntry', () => {

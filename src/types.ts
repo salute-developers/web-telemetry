@@ -1,3 +1,5 @@
+import type { AssistantWindow } from '@salutejs/client';
+
 export type WebTelemetryValue = string | number | boolean;
 
 /**
@@ -85,3 +87,12 @@ type ResourcesBlackList = {
 export type WebTelemetryResourcesConfig = WebTelemetryConfig & ResourcesBlackList;
 
 export type WebTelemetryExtendedConfig = WebTelemetryConfig & ResourcesBlackList;
+
+export type WindowWithAssistant = Window &
+    AssistantWindow & {
+        appInitialData: Record<string, any>;
+        __ASSISTANT_CLIENT__?: {
+            version: string;
+            firstSmartAppDataMid?: string;
+        };
+    };

@@ -1,14 +1,14 @@
 import { onLCP, onFID, onCLS, onFCP, onINP } from 'web-vitals/attribution';
 
-import { WebTelemetryExtendedConfig, WebTelemetryTransport } from '../types';
+import type { WebTelemetryExtendedConfig, WebTelemetryTransport } from '../types.js';
 
-import { WebTelemetryMonitoringWeb } from './WebTelemetryMonitoringWeb';
+import { WebTelemetryMonitoringWeb } from './WebTelemetryMonitoringWeb.js';
 
 export class WebTelemetryMonitoringWebAppWithWebVitals extends WebTelemetryMonitoringWeb {
     protected constructor(config: WebTelemetryExtendedConfig, transports?: Array<WebTelemetryTransport>) {
         super(config, transports);
     }
-    protected static _instance: WebTelemetryMonitoringWebAppWithWebVitals;
+    protected static override _instance: WebTelemetryMonitoringWebAppWithWebVitals;
 
     public startWebVitals() {
         [onLCP, onFID, onCLS, onFCP, onINP].forEach((getMetric) => {
@@ -18,7 +18,7 @@ export class WebTelemetryMonitoringWebAppWithWebVitals extends WebTelemetryMonit
         });
     }
 
-    public static Instance(config: WebTelemetryExtendedConfig, transports?: Array<WebTelemetryTransport>) {
+    public static override Instance(config: WebTelemetryExtendedConfig, transports?: Array<WebTelemetryTransport>) {
         return this._instance || (this._instance = new WebTelemetryMonitoringWebAppWithWebVitals(config, transports));
     }
 }
