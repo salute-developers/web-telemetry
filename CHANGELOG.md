@@ -1,3 +1,15 @@
+# v2.0.11 (Tue Mar 11 2025)
+
+#### 🐛 Bug Fix
+
+- [minor] update dependencies and TypeScript configuration [#30](https://github.com/salute-developers/web-telemetry/pull/30) ([@arsenykruglikov](https://github.com/arsenykruglikov))
+
+#### Authors: 1
+
+- Arseny Kruglikov ([@arsenykruglikov](https://github.com/arsenykruglikov))
+
+---
+
 # v2.0.10 (Tue Mar 04 2025)
 
 #### 🐛 Bug Fix
