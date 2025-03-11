@@ -37,19 +37,33 @@ export class WebTelemetryApp extends WebTelemetryBase<WebTelemetryAppEvent, WebT
     }
 
     protected override sendHandler() {
-        for (const addon of this.addons) {
-            const data = addon.data();
-            const metadata = addon.metadata();
-            this.mainEvent = Object.assign({}, data, this.mainEvent);
-            this.metaData = Object.assign({}, metadata, this.metaData);
+        if (!this.addons.length) {
+            this.callTransport({});
+            return;
         }
 
-        const event = {
-            ...this.mainEvent,
-            metadata: stringifyCircularObj(this.metaData),
-        };
+        Promise.all(this.addons.map((addon) => Promise.all([addon.data(), addon.metadata()])))
+            .then((results) => {
+                results.forEach(([dataResult, metadataResult]) => {
+                    this.mainEvent = { ...dataResult, ...this.mainEvent };
+                    this.metaData = { ...metadataResult, ...this.metaData };
+                });
 
-        this.callTransport(event);
+                const event = {
+                    ...this.mainEvent,
+                    metadata: stringifyCircularObj(this.metaData),
+                };
+
+                this.callTransport(event);
+            })
+            .catch((error) => {
+                console.error('Error in sendHandler:', error);
+                this.callTransport({
+                    ...this.mainEvent,
+                    error: 'Failed to process addons',
+                    metadata: stringifyCircularObj(this.metaData),
+                });
+            });
     }
 
     public override push(): WebTelemetryBaseEvent {

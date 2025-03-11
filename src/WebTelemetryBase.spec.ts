@@ -51,7 +51,7 @@ describe('WebTelemetryBase', () => {
             );
         });
 
-        it('should merge data and metadata', () => {
+        it('should merge data and metadata', async () => {
             const expectedData = {
                 data: 'data',
                 addon1Data: 'addon1Data',
@@ -64,7 +64,7 @@ describe('WebTelemetryBase', () => {
                 addon2Metadata: 'addon2Metadata',
             };
 
-            instance.push({ data: 'data' }, { metadata: 'metadata' });
+            await instance.push({ data: 'data' }, { metadata: 'metadata' });
             const { metadata, ...actualData } = instance.getEvents()[0];
 
             expect(actualData).toMatchObject(expectedData);
