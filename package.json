@@ -11,41 +11,13 @@
   "contributors": [],
   "type": "module",
   "exports": {
+    "./lib/*": {
+      "import": "./esm/*.js",
+      "require": "./lib/*.js"
+    },
     "./lib": {
       "import": "./esm/presets/WebTelemetry.js",
       "require": "./lib/presets/WebTelemetry.js"
-    },
-    "./lib/types": {
-      "import": "./esm/types.js",
-      "require": "./lib/types.js"
-    },
-    "./lib/presets/*": {
-      "import": "./esm/presets/*.js",
-      "require": "./lib/presets/*.js"
-    },
-    "./lib/extra/*": {
-      "import": "./esm/extra/*.js",
-      "require": "./lib/extra/*.js"
-    },
-    "./lib/constants": {
-      "import": "./esm/constants.js",
-      "require": "./lib/constants.js"
-    },
-    "./lib/config": {
-      "import": "./esm/config.js",
-      "require": "./lib/config.js"
-    },
-    "./lib/helpers": {
-      "import": "./esm/helpers.js",
-      "require": "./lib/helpers.js"
-    },
-    "./lib/WebTelemetryTransport": {
-      "import": "./esm/WebTelemetryTransport.js",
-      "require": "./lib/WebTelemetryTransport.js"
-    },
-    "./lib/WebTelemetryBase": {
-      "import": "./esm/WebTelemetryBase.js",
-      "require": "./lib/WebTelemetryBase.js"
     }
   },
   "files": [
@@ -76,14 +48,14 @@
     "@salutejs/client": "1.35.5",
     "@salutejs/eslint-config": "3.2.1",
     "@salutejs/prettier-config": "3.1.0",
-    "@types/node": "22.13.9",
-    "auto": "11.2.1",
-    "eslint": "9.21.0",
+    "@types/node": "22.13.10",
+    "auto": "11.3.0",
+    "eslint": "9.22.0",
     "glob": "11.0.1",
     "jsdom": "25.0.1",
     "prettier": "3.5.3",
     "typescript": "5.8.2",
-    "vitest": "3.0.7"
+    "vitest": "3.0.8"
   },
   "publishConfig": {
     "access": "public"
