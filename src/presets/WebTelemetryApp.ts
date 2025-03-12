@@ -42,30 +42,28 @@ export class WebTelemetryApp extends WebTelemetryBase<WebTelemetryAppEvent, WebT
             return;
         }
 
-        Promise.allSettled(this.addons.map((addon) => 
-            Promise.all([addon.data(), addon.metadata()])
-        ))
-        .then((results) => {
-            results.forEach((result) => {
-                if (result.status === 'fulfilled') {
-                    const [dataResult, metadataResult] = result.value;
-                    this.mainEvent = { ...dataResult, ...this.mainEvent };
-                    this.metaData = { ...metadataResult, ...this.metaData };
-                } else {
-                    console.error('Error in addon:', result.reason);
-                }
+        Promise.allSettled(this.addons.map((addon) => Promise.all([addon.data(), addon.metadata()])))
+            .then((results) => {
+                results.forEach((result) => {
+                    if (result.status === 'fulfilled') {
+                        const [dataResult, metadataResult] = result.value;
+                        this.mainEvent = { ...dataResult, ...this.mainEvent };
+                        this.metaData = { ...metadataResult, ...this.metaData };
+                    } else {
+                        console.error('Error in addon:', result.reason);
+                    }
+                });
+
+                const event = {
+                    ...this.mainEvent,
+                    metadata: stringifyCircularObj(this.metaData),
+                };
+
+                this.callTransport(event);
+            })
+            .catch((error) => {
+                console.error('Unexpected error in sendHandler:', error);
             });
-        
-            const event = {
-                ...this.mainEvent,
-                metadata: stringifyCircularObj(this.metaData),
-            };
-        
-            this.callTransport(event);
-        })
-        .catch((error) => {
-            console.error('Unexpected error in sendHandler:', error);
-        });
     }
 
     public override push(): WebTelemetryBaseEvent {
