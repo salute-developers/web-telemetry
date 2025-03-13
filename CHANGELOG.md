@@ -1,3 +1,16 @@
+# v2.0.12 (Thu Mar 13 2025)
+
+#### 🐛 Bug Fix
+
+- Added async send handler for web-telemetry-base [#31](https://github.com/salute-developers/web-telemetry/pull/31) ([@pamellix](https://github.com/pamellix) [@arsenykruglikov](https://github.com/arsenykruglikov))
+
+#### Authors: 2
+
+- Arseny Kruglikov ([@arsenykruglikov](https://github.com/arsenykruglikov))
+- Paul ([@pamellix](https://github.com/pamellix))
+
+---
+
 # v2.0.11 (Tue Mar 11 2025)
 
 #### 🐛 Bug Fix
