@@ -162,7 +162,7 @@ export abstract class WebTelemetryBase<P, R> {
             events.push(evt);
         }
 
-        const awaitedEvents = Promise.all(events);
-        this.callTransport(events);
+        const awaitedEvents = await Promise.all(events);
+        this.callTransport(awaitedEvents);
     }
 }
