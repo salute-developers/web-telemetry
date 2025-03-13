@@ -53,7 +53,8 @@ export class WebTelemetryApp extends WebTelemetryBase<WebTelemetryAppEvent, WebT
                         console.error('Error in addon:', result.reason);
                     }
                 });
-
+            })
+            .then(() => {
                 const event = {
                     ...this.mainEvent,
                     metadata: stringifyCircularObj(this.metaData),
@@ -66,7 +67,7 @@ export class WebTelemetryApp extends WebTelemetryBase<WebTelemetryAppEvent, WebT
             });
     }
 
-    public override push(): WebTelemetryBaseEvent {
+    public override push(): Promise<WebTelemetryBaseEvent> {
         throw new Error('Not implemented for "WebTelemetryApp"');
     }
 

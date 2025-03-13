@@ -129,7 +129,7 @@ export abstract class WebTelemetryBase<P, R> {
         });
     }
 
-    public push<M>(payload: P, meta?: M): Promise<WebTelemetryBaseEvent> | WebTelemetryBaseEvent {
+    public push<M>(payload: P, meta?: M): Promise<WebTelemetryBaseEvent> {
         if (this.config.disabled) {
             return Promise.resolve({ sessionId: 'disabled' });
         }
@@ -157,11 +157,12 @@ export abstract class WebTelemetryBase<P, R> {
             if (this.config.disabled) {
                 evt = { sessionId: 'disabled' };
             } else {
-                evt = await this.createEvent(payload, meta);
+                evt = this.createEvent(payload, meta);
             }
             events.push(evt);
         }
 
+        const awaitedEvents = Promise.all(events);
         this.callTransport(events);
     }
 }
