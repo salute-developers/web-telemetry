@@ -37,22 +37,37 @@ export class WebTelemetryApp extends WebTelemetryBase<WebTelemetryAppEvent, WebT
     }
 
     protected override sendHandler() {
-        for (const addon of this.addons) {
-            const data = addon.data();
-            const metadata = addon.metadata();
-            this.mainEvent = Object.assign({}, data, this.mainEvent);
-            this.metaData = Object.assign({}, metadata, this.metaData);
+        if (!this.addons.length) {
+            this.callTransport({});
+            return;
         }
 
-        const event = {
-            ...this.mainEvent,
-            metadata: stringifyCircularObj(this.metaData),
-        };
+        Promise.allSettled(this.addons.map((addon) => Promise.all([addon.data(), addon.metadata()])))
+            .then((results) => {
+                results.forEach((result) => {
+                    if (result.status === 'fulfilled') {
+                        const [dataResult, metadataResult] = result.value;
+                        this.mainEvent = { ...dataResult, ...this.mainEvent };
+                        this.metaData = { ...metadataResult, ...this.metaData };
+                    } else {
+                        console.error('Error in addon:', result.reason);
+                    }
+                });
+            })
+            .then(() => {
+                const event = {
+                    ...this.mainEvent,
+                    metadata: stringifyCircularObj(this.metaData),
+                };
 
-        this.callTransport(event);
+                this.callTransport(event);
+            })
+            .catch((error) => {
+                console.error('Unexpected error in sendHandler:', error);
+            });
     }
 
-    public override push(): WebTelemetryBaseEvent {
+    public override push(): Promise<WebTelemetryBaseEvent> {
         throw new Error('Not implemented for "WebTelemetryApp"');
     }
 
