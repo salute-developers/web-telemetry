@@ -18,7 +18,7 @@ export class WebTelemetryTransportDefault implements WebTelemetryTransport {
     }
 }
 
-export class WebTelemetryTransportWithHeaders implements WebTelemetryTransport {
+export class WebTelemetryTransportJson implements WebTelemetryTransport {
     private url: string;
 
     constructor(url: string) {
