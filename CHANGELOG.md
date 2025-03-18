@@ -1,3 +1,15 @@
+# v2.0.13 (Tue Mar 18 2025)
+
+#### 🐛 Bug Fix
+
+- Adding transport with headers [#32](https://github.com/salute-developers/web-telemetry/pull/32) ([@pamellix](https://github.com/pamellix))
+
+#### Authors: 1
+
+- Paul ([@pamellix](https://github.com/pamellix))
+
+---
+
 # v2.0.12 (Thu Mar 13 2025)
 
 #### 🐛 Bug Fix
