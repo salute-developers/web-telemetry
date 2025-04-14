@@ -40,17 +40,17 @@ describe('presets', () => {
                 name: 'https://example.com/my-video.mp4',
             },
             {
-                name: 'https://sentry-api.sberdevices.ru/api/164/security/?sentry_key=0'
+                name: 'https://sentry-api.sberdevices.ru/api/164/security/?sentry_key=0',
             },
             {
-                name: 'https://gt.andata.ru/com.snowplowanalytics.snowplow/tp2'
+                name: 'https://gt.andata.ru/com.snowplowanalytics.snowplow/tp2',
             },
             {
-                name: 'https://top-fwz1.mail.ru/tracker?_0'
+                name: 'https://top-fwz1.mail.ru/tracker?_0',
             },
             {
-                name: 'https://sve.online.sberbank.ru/metrics/partners'
-            }
+                name: 'https://sve.online.sberbank.ru/metrics/partners',
+            },
         ] as PerformanceEntry[];
 
         const mixedEntres = [...desiredEntres, ...unadvisableEntres];
