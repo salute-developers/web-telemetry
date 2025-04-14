@@ -35,9 +35,7 @@ const PERMANENT_URLS_BLACKLIST = [
     /ingest\.sentry\.io/,
     /mc\.yandex\.ru/,
     /gt\.andata\.ru/,
-    /sentry-api\.sberdevices\.ru/,
     /top-fwz1\.mail\.ru/,
-    /sve\.online\.sberbank\.ru/,
     VIDEO_URLs,
 ];
 
