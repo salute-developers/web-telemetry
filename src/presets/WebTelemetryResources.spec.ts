@@ -4,7 +4,16 @@ import { validatePerformanceEntry, VIDEO_URLs } from './WebTelemetryResources.js
 
 describe('presets', () => {
     describe('WebTelemetryResources:validatePerformanceEntry', () => {
-        const firstBlackList = [/api\.amplitude\.com/, /ingest\.sentry\.io/, /mc\.yandex\.ru/, VIDEO_URLs];
+        const firstBlackList = [
+            /api\.amplitude\.com/,
+            /ingest\.sentry\.io/,
+            /mc\.yandex\.ru/,
+            /gt\.andata\.ru/,
+            /sentry-api\.sberdevices\.ru/,
+            /top-fwz1\.mail\.ru/,
+            /sve\.online\.sberbank\.ru/,
+            VIDEO_URLs,
+        ];
         const secondBlackList = [/img\.smotreshka\.tv/, /static\.okko\.tv/];
 
         const validator = validatePerformanceEntry(firstBlackList, secondBlackList);
@@ -30,6 +39,18 @@ describe('presets', () => {
             {
                 name: 'https://example.com/my-video.mp4',
             },
+            {
+                name: 'https://sentry-api.sberdevices.ru/api/164/security/?sentry_key=0'
+            },
+            {
+                name: 'https://gt.andata.ru/com.snowplowanalytics.snowplow/tp2'
+            },
+            {
+                name: 'https://top-fwz1.mail.ru/tracker?_0'
+            },
+            {
+                name: 'https://sve.online.sberbank.ru/metrics/partners'
+            }
         ] as PerformanceEntry[];
 
         const mixedEntres = [...desiredEntres, ...unadvisableEntres];
