@@ -1,3 +1,15 @@
+# v2.0.14 (Tue Apr 15 2025)
+
+#### 🐛 Bug Fix
+
+- Adding new urls to resources black list [#34](https://github.com/salute-developers/web-telemetry/pull/34) ([@pamellix](https://github.com/pamellix))
+
+#### Authors: 1
+
+- Paul ([@pamellix](https://github.com/pamellix))
+
+---
+
 # v2.0.13 (Tue Mar 18 2025)
 
 #### 🐛 Bug Fix
