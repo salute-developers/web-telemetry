@@ -30,7 +30,14 @@ const FIELDS_TO_EXTRACT = [
 export const VIDEO_URLs =
     /(^.*\.(mp4|avi|wmv|mov|flv|mkv|webm|vob|ogv|m4v|3gp|3g2|mpeg|mpg|m2v|m4v|svi|3gpp|3gpp2|mxf|roq|nsv|flv|f4v|f4p|f4a|f4b)$)/gim;
 
-const PERMANENT_URLS_BLACKLIST = [/api\.amplitude\.com/, /ingest\.sentry\.io/, /mc\.yandex\.ru/, VIDEO_URLs];
+const PERMANENT_URLS_BLACKLIST = [
+    /api\.amplitude\.com/,
+    /ingest\.sentry\.io/,
+    /mc\.yandex\.ru/,
+    /gt\.andata\.ru/,
+    /top-fwz1\.mail\.ru/,
+    VIDEO_URLs,
+];
 
 export const validatePerformanceEntry = (...args: RegExp[][]) => {
     const flatArgs = args.flat();

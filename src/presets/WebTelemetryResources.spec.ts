@@ -4,7 +4,14 @@ import { validatePerformanceEntry, VIDEO_URLs } from './WebTelemetryResources.js
 
 describe('presets', () => {
     describe('WebTelemetryResources:validatePerformanceEntry', () => {
-        const firstBlackList = [/api\.amplitude\.com/, /ingest\.sentry\.io/, /mc\.yandex\.ru/, VIDEO_URLs];
+        const firstBlackList = [
+            /api\.amplitude\.com/,
+            /ingest\.sentry\.io/,
+            /mc\.yandex\.ru/,
+            /gt\.andata\.ru/,
+            /top-fwz1\.mail\.ru/,
+            VIDEO_URLs,
+        ];
         const secondBlackList = [/img\.smotreshka\.tv/, /static\.okko\.tv/];
 
         const validator = validatePerformanceEntry(firstBlackList, secondBlackList);
@@ -29,6 +36,12 @@ describe('presets', () => {
             },
             {
                 name: 'https://example.com/my-video.mp4',
+            },
+            {
+                name: 'https://gt.andata.ru/com.snowplowanalytics.snowplow/tp2',
+            },
+            {
+                name: 'https://top-fwz1.mail.ru/tracker?_0',
             },
         ] as PerformanceEntry[];
 
