@@ -1,4 +1,4 @@
-import { onLCP, onFID, onCLS, onFCP, onINP } from 'web-vitals/attribution';
+import { onCLS, onFCP, onFID, onINP, onLCP } from 'web-vitals/attribution';
 
 import type { WebTelemetryExtendedConfig, WebTelemetryTransport } from '../types.js';
 
@@ -12,9 +12,7 @@ export class WebTelemetryMonitoringWebAppWithWebVitals extends WebTelemetryMonit
 
     public startWebVitals() {
         [onLCP, onFID, onCLS, onFCP, onINP].forEach((getMetric) => {
-            getMetric(({ name, value, attribution }) =>
-                this.KV.push({ key: name, value: Math.round(value) }, attribution),
-            );
+            getMetric(({ name, value, attribution }) => this.KV.push({ key: name, value: value }, attribution));
         });
     }
 
