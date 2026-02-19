@@ -38,11 +38,11 @@ const memory = new KVDataMemory(kv, 2);
 await memory.startMonitoring();
 
 // Остановка мониторинга
-memory.stopMonitoring();
+memory.endMonitoring();
 ```
 
 ## Отправляемые данные
 
-| Ключ | Тип | Описание |
-|---|---|---|
+| Ключ              | Тип      | Описание                    |
+| ----------------- | -------- | --------------------------- |
 | `MemoryUsedBytes` | `number` | Потребление памяти в байтах |

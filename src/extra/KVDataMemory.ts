@@ -73,7 +73,7 @@ export class KVDataMemory implements WebTelemetryKVData {
         this.scheduleNext();
     }
 
-    public stopMonitoring(): void {
+    public endMonitoring(): void {
         if (this.timerId) {
             clearTimeout(this.timerId);
             this.timerId = null;

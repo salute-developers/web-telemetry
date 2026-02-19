@@ -49,7 +49,7 @@ describe('KVDataMemory', () => {
         const item = data.find((x: any) => x.key === 'MemoryUsedBytes');
         expect(item.valueNum).toBe(50_000_000);
 
-        memory.stopMonitoring();
+        memory.endMonitoring();
     });
 
     it('should measure via measureUserAgentSpecificMemory when cross-origin isolated', async () => {
@@ -68,14 +68,14 @@ describe('KVDataMemory', () => {
         expect(item.valueNum).toBe(80_000_000);
         expect((performance as any).measureUserAgentSpecificMemory).toHaveBeenCalled();
 
-        memory.stopMonitoring();
+        memory.endMonitoring();
     });
 
     it('should fallback to performance.memory when measureUserAgentSpecificMemory throws', async () => {
         (globalThis as any).crossOriginIsolated = true;
-        (performance as any).measureUserAgentSpecificMemory = vi.fn().mockRejectedValue(
-            new DOMException('not allowed', 'SecurityError'),
-        );
+        (performance as any).measureUserAgentSpecificMemory = vi
+            .fn()
+            .mockRejectedValue(new DOMException('not allowed', 'SecurityError'));
         (performance as any).memory = { usedJSHeapSize: 30_000_000 };
 
         const { transport, calls } = createFakeTransport();
@@ -89,7 +89,7 @@ describe('KVDataMemory', () => {
         const item = data.find((x: any) => x.key === 'MemoryUsedBytes');
         expect(item.valueNum).toBe(30_000_000);
 
-        memory.stopMonitoring();
+        memory.endMonitoring();
     });
 
     it('should not send data when no memory API is available', async () => {
@@ -101,7 +101,7 @@ describe('KVDataMemory', () => {
 
         expect(calls.length).toBe(0);
 
-        memory.stopMonitoring();
+        memory.endMonitoring();
     });
 
     it('should send measurements periodically', async () => {
@@ -122,10 +122,10 @@ describe('KVDataMemory', () => {
         await vi.advanceTimersByTimeAsync(60_000);
         expect(calls.length).toBe(3);
 
-        memory.stopMonitoring();
+        memory.endMonitoring();
     });
 
-    it('should stop sending after stopMonitoring is called', async () => {
+    it('should stop sending after endMonitoring is called', async () => {
         (performance as any).memory = { usedJSHeapSize: 10_000_000 };
 
         const { transport, calls } = createFakeTransport();
@@ -135,7 +135,7 @@ describe('KVDataMemory', () => {
         await memory.startMonitoring();
         expect(calls.length).toBe(1);
 
-        memory.stopMonitoring();
+        memory.endMonitoring();
 
         await vi.advanceTimersByTimeAsync(60_000);
         expect(calls.length).toBe(1);
@@ -170,7 +170,7 @@ describe('KVDataMemory', () => {
         await vi.advanceTimersByTimeAsync(60_000);
         expect(calls.length).toBe(2);
 
-        memory.stopMonitoring();
+        memory.endMonitoring();
     });
 
     it('should reflect updated memory values in subsequent measurements', async () => {
@@ -195,6 +195,6 @@ describe('KVDataMemory', () => {
         const second = JSON.parse(calls[1]).find((x: any) => x.key === 'MemoryUsedBytes');
         expect(second.valueNum).toBe(25_000_000);
 
-        memory.stopMonitoring();
+        memory.endMonitoring();
     });
 });
