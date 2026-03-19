@@ -17,7 +17,6 @@ esm
 node_modules
 npm-debug.log
 *.tsbuildinfo
-package-lock.json
 
 .cache
 coverage
