@@ -1,3 +1,16 @@
+# v2.0.16 (Thu Mar 19 2026)
+
+#### 🐛 Bug Fix
+
+- Bumping web vitals to version 5 [#38](https://github.com/salute-developers/web-telemetry/pull/38) (pitagankin@sberdevices.ru [@pamellix](https://github.com/pamellix))
+
+#### Authors: 2
+
+- Paul ([@pamellix](https://github.com/pamellix))
+- Таганкин Павел Игоревич (pitagankin@sberdevices.ru)
+
+---
+
 # v2.0.15 (Tue Feb 24 2026)
 
 #### 🐛 Bug Fix
