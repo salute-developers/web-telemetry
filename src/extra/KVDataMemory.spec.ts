@@ -47,14 +47,26 @@ describe('KVDataMemory', () => {
         expect(calls.length).toBe(1);
         const data = JSON.parse(calls[0]);
         const item = data.find((x: any) => x.key === 'MemoryUsedBytes');
+        expect(data.length).toBe(1);
         expect(item.valueNum).toBe(50_000_000);
+        const metadata = JSON.parse(item.metadata);
+        expect(metadata.api).toBe('jsHeap');
+        expect(metadata.source).toBe('JSHeapUsed');
+        expect(metadata.rawBreakdown).toEqual([]);
 
         memory.endMonitoring();
     });
 
     it('should measure via measureUserAgentSpecificMemory when cross-origin isolated', async () => {
         (globalThis as any).crossOriginIsolated = true;
-        (performance as any).measureUserAgentSpecificMemory = vi.fn().mockResolvedValue({ bytes: 80_000_000 }) as any;
+        (performance as any).measureUserAgentSpecificMemory = vi.fn().mockResolvedValue({
+            bytes: 80_000_000,
+            breakdown: [
+                { bytes: 50_000_000, types: ['JavaScript'] },
+                { bytes: 10_000_000, types: ['DOM'] },
+                { bytes: 20_000_000, types: ['Shared'] },
+            ],
+        }) as any;
 
         const { transport, calls } = createFakeTransport();
         const kv = createKV(transport);
@@ -65,7 +77,16 @@ describe('KVDataMemory', () => {
         expect(calls.length).toBe(1);
         const data = JSON.parse(calls[0]);
         const item = data.find((x: any) => x.key === 'MemoryUsedBytes');
+        expect(data.length).toBe(1);
         expect(item.valueNum).toBe(80_000_000);
+        const metadata = JSON.parse(item.metadata);
+        expect(metadata.api).toBe('uasm');
+        expect(metadata.source).toBe('MeasureUserAgentSpecificMemory');
+        expect(metadata.rawBreakdown).toEqual([
+            { bytes: 50_000_000, types: ['JavaScript'] },
+            { bytes: 10_000_000, types: ['DOM'] },
+            { bytes: 20_000_000, types: ['Shared'] },
+        ]);
         expect((performance as any).measureUserAgentSpecificMemory).toHaveBeenCalled();
 
         memory.endMonitoring();
@@ -87,7 +108,12 @@ describe('KVDataMemory', () => {
         expect(calls.length).toBe(1);
         const data = JSON.parse(calls[0]);
         const item = data.find((x: any) => x.key === 'MemoryUsedBytes');
+        expect(data.length).toBe(1);
         expect(item.valueNum).toBe(30_000_000);
+        const metadata = JSON.parse(item.metadata);
+        expect(metadata.api).toBe('jsHeap');
+        expect(metadata.source).toBe('JSHeapUsed');
+        expect(metadata.rawBreakdown).toEqual([]);
 
         memory.endMonitoring();
     });

@@ -3,24 +3,43 @@ import type { KVDataItem, WebTelemetryKVData } from '../types.js';
 
 interface PerformanceWithMemoryAPIs extends Performance {
     memory?: { usedJSHeapSize: number };
-    measureUserAgentSpecificMemory?: () => Promise<{ bytes: number }>;
+    measureUserAgentSpecificMemory?: () => Promise<MemoryMeasurementResult>;
 }
 
 const DEFAULT_INTERVAL_MIN = 5;
+type MeasurementSource = 'MeasureUserAgentSpecificMemory' | 'JSHeapUsed';
+type MeasurementAPI = 'uasm' | 'jsHeap';
+
+interface MemoryMeasurementBreakdownItem {
+    bytes: number;
+    types?: string[];
+}
+
+interface MemoryMeasurementResult {
+    bytes: number;
+    breakdown?: MemoryMeasurementBreakdownItem[];
+}
+
+interface MemoryMeasurementSnapshot {
+    bytes: number;
+    api: MeasurementAPI;
+    source: MeasurementSource;
+    rawBreakdown: MemoryMeasurementBreakdownItem[];
+}
 
 export class KVDataMemory implements WebTelemetryKVData {
     private KV: WebTelemetryKV;
     private intervalMs: number;
     private timerId: ReturnType<typeof setTimeout> | null = null;
     private measuring = false;
-    private lastUsedBytes: number | null = null;
+    private lastMeasurement: MemoryMeasurementSnapshot | null = null;
 
     constructor(KV: WebTelemetryKV, intervalMinutes = DEFAULT_INTERVAL_MIN) {
         this.KV = KV;
         this.intervalMs = intervalMinutes * 60 * 1000;
     }
 
-    private async measure(): Promise<number | null> {
+    private async measure(): Promise<MemoryMeasurementSnapshot | null> {
         const perf = performance as PerformanceWithMemoryAPIs;
 
         if (
@@ -30,13 +49,23 @@ export class KVDataMemory implements WebTelemetryKVData {
         ) {
             try {
                 const result = await perf.measureUserAgentSpecificMemory();
-                return result.bytes;
+                return {
+                    bytes: result.bytes,
+                    api: 'uasm',
+                    source: 'MeasureUserAgentSpecificMemory',
+                    rawBreakdown: result.breakdown ?? [],
+                };
                 // eslint-disable-next-line no-empty
             } catch (_e) {}
         }
 
         if (perf.memory) {
-            return perf.memory.usedJSHeapSize;
+            return {
+                bytes: perf.memory.usedJSHeapSize,
+                api: 'jsHeap',
+                source: 'JSHeapUsed',
+                rawBreakdown: [],
+            };
         }
 
         return null;
@@ -50,10 +79,10 @@ export class KVDataMemory implements WebTelemetryKVData {
         this.measuring = true;
 
         try {
-            const bytes = await this.measure();
+            const measurement = await this.measure();
 
-            if (bytes !== null) {
-                this.lastUsedBytes = bytes;
+            if (measurement !== null) {
+                this.lastMeasurement = measurement;
                 await this.KV.pushListAndSend(this.KVdata());
             }
         } finally {
@@ -81,7 +110,7 @@ export class KVDataMemory implements WebTelemetryKVData {
     }
 
     KVdata(): KVDataItem[] {
-        if (this.lastUsedBytes === null) {
+        if (this.lastMeasurement === null) {
             return [];
         }
 
@@ -89,7 +118,12 @@ export class KVDataMemory implements WebTelemetryKVData {
             {
                 payload: {
                     key: 'MemoryUsedBytes',
-                    value: this.lastUsedBytes,
+                    value: this.lastMeasurement.bytes,
+                },
+                meta: {
+                    api: this.lastMeasurement.api,
+                    source: this.lastMeasurement.source,
+                    rawBreakdown: this.lastMeasurement.rawBreakdown,
                 },
             },
         ];
