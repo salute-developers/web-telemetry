@@ -1,3 +1,15 @@
+# v2.0.17 (Tue Apr 07 2026)
+
+#### 🐛 Bug Fix
+
+- feat: enrich KVDataMemory metadata with api/source and rawBreakdown [#39](https://github.com/salute-developers/web-telemetry/pull/39) ([@SeanSilke](https://github.com/SeanSilke))
+
+#### Authors: 1
+
+- Sergey Orlov ([@SeanSilke](https://github.com/SeanSilke))
+
+---
+
 # v2.0.16 (Thu Mar 19 2026)
 
 #### 🐛 Bug Fix
