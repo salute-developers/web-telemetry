@@ -28,6 +28,37 @@ export abstract class WebTelemetryBase<P, R> {
 
     private timer: number | undefined;
 
+    /** Страница в lifecycle-состоянии frozen (Page Lifecycle API). */
+    private documentFrozen = false;
+
+    private readonly onVisibilityChange = () => {
+        if (typeof document === 'undefined') {
+            return;
+        }
+
+        if (document.visibilityState === 'hidden') {
+            clearTimeout(this.timer);
+            return;
+        }
+
+        if (this.events.length > 0) {
+            this.scheduleSend();
+        }
+    };
+
+    private readonly onFreeze = () => {
+        this.documentFrozen = true;
+        clearTimeout(this.timer);
+    };
+
+    private readonly onResume = () => {
+        this.documentFrozen = false;
+
+        if (this.events.length > 0) {
+            this.scheduleSend();
+        }
+    };
+
     /**
      *
      * @param config конфигурация
@@ -55,6 +86,20 @@ export abstract class WebTelemetryBase<P, R> {
                 ? [new WebTelemetryTransportDebug()]
                 : [new WebTelemetryTransportDefault(`${this.config.endpoint}/${this.config.projectName}`)];
         }
+
+        if (typeof document !== 'undefined') {
+            document.addEventListener('visibilitychange', this.onVisibilityChange);
+            document.addEventListener('freeze', this.onFreeze);
+            document.addEventListener('resume', this.onResume);
+        }
+    }
+
+    private canSendTelemetry(): boolean {
+        if (typeof document === 'undefined') {
+            return true;
+        }
+
+        return document.visibilityState === 'visible' && !this.documentFrozen;
     }
 
     /**
@@ -65,6 +110,10 @@ export abstract class WebTelemetryBase<P, R> {
 
     protected callTransport<T>(data: T) {
         if (this.config.disabled) {
+            return;
+        }
+
+        if (!this.canSendTelemetry()) {
             return;
         }
 
@@ -84,11 +133,19 @@ export abstract class WebTelemetryBase<P, R> {
     protected scheduleSend() {
         clearTimeout(this.timer);
 
+        if (!this.canSendTelemetry()) {
+            return;
+        }
+
         if (this.config.buffSize && this.events.length >= this.config.buffSize) {
             this.sendHandler();
             this.events = [];
         } else {
             this.timer = window.setTimeout(() => {
+                if (!this.canSendTelemetry()) {
+                    return;
+                }
+
                 this.sendHandler();
                 this.events = [];
             }, this.config.delay);

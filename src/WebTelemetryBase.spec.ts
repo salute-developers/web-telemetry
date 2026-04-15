@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 
 import type { WebTelemetryAddon } from './types.js';
 import { WebTelemetryBase } from './WebTelemetryBase.js';
@@ -37,6 +37,20 @@ class WebTelemetry<T> extends WebTelemetryBase<T, T> {
     }
 }
 
+class WebTelemetryBatch<T> extends WebTelemetryBase<T, T> {
+    protected payloadToJSON(payload: T): T {
+        return payload;
+    }
+}
+
+function setDocumentVisibility(visibilityState: DocumentVisibilityState) {
+    Object.defineProperty(document, 'visibilityState', {
+        configurable: true,
+        value: visibilityState,
+    });
+    document.dispatchEvent(new Event('visibilitychange'));
+}
+
 describe('WebTelemetryBase', () => {
     describe('addons', () => {
         let instance: WebTelemetry<any>;
@@ -71,6 +85,69 @@ describe('WebTelemetryBase', () => {
 
             const actualMetadata = metadata && JSON.parse(metadata);
             expect(actualMetadata).toMatchObject(expectedMetadata);
+        });
+    });
+
+    describe('visibility and freeze', () => {
+        afterEach(() => {
+            vi.useRealTimers();
+            setDocumentVisibility('visible');
+        });
+
+        it('does not call transport while document is hidden; flushes after visible', async () => {
+            const send = vi.fn();
+            const transport = { send };
+
+            const instance = new WebTelemetryBatch(
+                {
+                    projectName: 'project-name',
+                    debug: false,
+                    delay: 50,
+                    buffSize: 1,
+                },
+                [],
+                [transport],
+            );
+
+            setDocumentVisibility('hidden');
+
+            await instance.push({ data: 'data' });
+
+            expect(send).not.toHaveBeenCalled();
+
+            setDocumentVisibility('visible');
+
+            expect(send).toHaveBeenCalledTimes(1);
+        });
+
+        it('clears scheduled send on freeze and sends after resume', async () => {
+            vi.useFakeTimers();
+
+            const send = vi.fn();
+            const transport = { send };
+
+            const instance = new WebTelemetryBatch(
+                {
+                    projectName: 'project-name',
+                    debug: false,
+                    delay: 100,
+                    buffSize: 100,
+                },
+                [],
+                [transport],
+            );
+
+            await instance.push({ data: 'data' });
+
+            document.dispatchEvent(new Event('freeze'));
+
+            vi.advanceTimersByTime(500);
+            expect(send).not.toHaveBeenCalled();
+
+            document.dispatchEvent(new Event('resume'));
+
+            vi.advanceTimersByTime(100);
+            expect(send).toHaveBeenCalledTimes(1);
         });
     });
 });
