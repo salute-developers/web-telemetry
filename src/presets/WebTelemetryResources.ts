@@ -59,6 +59,11 @@ export class WebTelemetryResources extends WebTelemetryBase<WebTelemetryResource
     private static observer: PerformanceObserver | undefined;
     private validatePerformanceEntry;
     private isObservationStarted: boolean = false;
+    private isFinalized: boolean = false;
+
+    private readonly onDocumentReady = () => {
+        void this.finalizeAfterDocumentReady();
+    };
 
     constructor(name: string, config: WebTelemetryResourcesConfig, transports?: Array<WebTelemetryTransport>) {
         super(config, [], transports);
@@ -77,38 +82,82 @@ export class WebTelemetryResources extends WebTelemetryBase<WebTelemetryResource
     }
 
     private handler(entryList: PerformanceObserverEntryList) {
+        if (this.config.disabled || this.isFinalized) {
+            return;
+        }
+
+        void this.processResources(entryList.getEntriesByType('resource'));
+    }
+
+    private shouldSkipResource(res: PerformanceEntry) {
+        /**
+         * Эта проверка необходима чтобы `PerformanceObserver` не тригерился
+         * на отправку данных в бекенд. Если этого не сделать, то шедулер будет
+         * бесконечно планировать отправку данных после любой отправки данных
+         */
+        return Boolean(res.name && this.config.endpoint && res.name.includes(this.config.endpoint));
+    }
+
+    private createResourcePayload(res: PerformanceEntry) {
+        const resData = res.toJSON ? res.toJSON() : {};
+
+        const evt: WebTelemetryResourcesData = {
+            hostname: window.location.hostname,
+            project: this.name,
+            path: window.location.href,
+        };
+
+        for (const entryName of FIELDS_TO_EXTRACT) {
+            const value = resData[entryName];
+            if (value) {
+                evt[entryName] = typeof value === 'number' ? Math.round(value) : value;
+            }
+        }
+
+        return evt;
+    }
+
+    private async processResources(resources: PerformanceEntry[]) {
         if (this.config.disabled) {
             return;
         }
 
-        const resources = entryList.getEntriesByType('resource').filter(this.validatePerformanceEntry);
-        for (const res of resources) {
-            /**
-             * Эта проверка необходима чтобы `PerformanceObserver` не тригерился
-             * на отправку данных в бекенд. Если этого не сделать, то шедулер будет
-             * бесконечно планировать отправку данных после любой отправки данных
-             */
-            if (res.name && this.config.endpoint && res.name.includes(this.config.endpoint)) {
-                continue;
-            }
+        const createdEvents = await Promise.all(
+            resources
+                .filter(this.validatePerformanceEntry)
+                .filter((entry) => !this.shouldSkipResource(entry))
+                .map((entry) => this.createEvent(this.createResourcePayload(entry))),
+        );
 
-            const resData = res.toJSON ? res.toJSON() : {};
-
-            const evt: WebTelemetryResourcesData = {
-                hostname: window.location.hostname,
-                project: this.name,
-                path: window.location.href,
-            };
-
-            for (const entryName of FIELDS_TO_EXTRACT) {
-                const value = resData[entryName];
-                if (value) {
-                    evt[entryName] = typeof value === 'number' ? Math.round(value) : value;
-                }
-            }
-
-            this.push(evt);
+        if (!createdEvents.length) {
+            return;
         }
+
+        this.events.push(...createdEvents);
+        this.scheduleSend();
+    }
+
+    private removeDocumentReadyListener() {
+        window.removeEventListener('load', this.onDocumentReady);
+    }
+
+    private async finalizeAfterDocumentReady() {
+        if (this.isFinalized) {
+            return;
+        }
+
+        this.isFinalized = true;
+        this.removeDocumentReadyListener();
+
+        if (WebTelemetryResources.observer && this.isObservationStarted) {
+            const bufferedEntries = WebTelemetryResources.observer.takeRecords();
+            WebTelemetryResources.observer.disconnect();
+            this.isObservationStarted = false;
+
+            await this.processResources(bufferedEntries);
+        }
+
+        this.flushBufferedEvents();
     }
 
     payloadToJSON(payload: WebTelemetryResourcesData) {
@@ -116,7 +165,7 @@ export class WebTelemetryResources extends WebTelemetryBase<WebTelemetryResource
     }
 
     public start() {
-        if (this.isObservationStarted) {
+        if (this.isObservationStarted || this.isFinalized) {
             return;
         }
         try {
@@ -126,12 +175,21 @@ export class WebTelemetryResources extends WebTelemetryBase<WebTelemetryResource
                     buffered: true,
                 });
                 this.isObservationStarted = true;
+
+                if (document.readyState === 'complete') {
+                    void this.finalizeAfterDocumentReady();
+                    return;
+                }
+
+                window.addEventListener('load', this.onDocumentReady, { once: true });
             }
             // eslint-disable-next-line no-empty
         } catch (_e) {}
     }
 
     public end() {
+        this.removeDocumentReadyListener();
+
         if (WebTelemetryResources.observer) {
             WebTelemetryResources.observer.disconnect();
             this.isObservationStarted = false;

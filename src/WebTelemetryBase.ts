@@ -78,6 +78,17 @@ export abstract class WebTelemetryBase<P, R> {
         this.callTransport([...this.events]);
     }
 
+    protected flushBufferedEvents() {
+        clearTimeout(this.timer);
+
+        if (!this.events.length) {
+            return;
+        }
+
+        this.sendHandler();
+        this.events = [];
+    }
+
     /**
      * Планирует отправку данных на сервер
      */
