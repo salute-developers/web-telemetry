@@ -59,6 +59,7 @@ export class WebTelemetryResources extends WebTelemetryBase<WebTelemetryResource
     private static observer: PerformanceObserver | undefined;
     private validatePerformanceEntry;
     private isObservationStarted: boolean = false;
+    private isObservationContinuedAfterLoad: boolean = false;
     private isFinalized: boolean = false;
 
     private readonly onDocumentReady = () => {
@@ -73,6 +74,7 @@ export class WebTelemetryResources extends WebTelemetryBase<WebTelemetryResource
             config.resourcesBlackList || [],
         );
         this.name = name;
+        this.isObservationContinuedAfterLoad = config.observeAfterLoad ?? false;
 
         const handler = this.handler.bind(this);
 
@@ -177,11 +179,15 @@ export class WebTelemetryResources extends WebTelemetryBase<WebTelemetryResource
                 this.isObservationStarted = true;
 
                 if (document.readyState === 'complete') {
-                    void this.finalizeAfterDocumentReady();
+                    if (!this.isObservationContinuedAfterLoad) {
+                        void this.finalizeAfterDocumentReady();
+                    }
                     return;
                 }
 
-                window.addEventListener('load', this.onDocumentReady, { once: true });
+                if (!this.isObservationContinuedAfterLoad) {
+                    window.addEventListener('load', this.onDocumentReady, { once: true });
+                }
             }
             // eslint-disable-next-line no-empty
         } catch (_e) {}
@@ -191,6 +197,7 @@ export class WebTelemetryResources extends WebTelemetryBase<WebTelemetryResource
         this.removeDocumentReadyListener();
 
         if (WebTelemetryResources.observer) {
+            this.flushBufferedEvents();
             WebTelemetryResources.observer.disconnect();
             this.isObservationStarted = false;
         }

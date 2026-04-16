@@ -84,9 +84,16 @@ type ResourcesBlackList = {
     resourcesBlackList?: RegExp[];
 };
 
-export type WebTelemetryResourcesConfig = WebTelemetryConfig & ResourcesBlackList;
+type ResourcesObservationOptions = {
+    /**
+     * Продолжать наблюдение за ресурсами после загрузки документа
+     */
+    observeAfterLoad?: boolean;
+};
 
-export type WebTelemetryExtendedConfig = WebTelemetryConfig & ResourcesBlackList;
+export type WebTelemetryResourcesConfig = WebTelemetryConfig & ResourcesBlackList & ResourcesObservationOptions;
+
+export type WebTelemetryExtendedConfig = WebTelemetryConfig & ResourcesBlackList & ResourcesObservationOptions;
 
 export type WindowWithAssistant = Window &
     AssistantWindow & {
