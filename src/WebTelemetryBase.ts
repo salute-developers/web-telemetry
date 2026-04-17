@@ -27,7 +27,6 @@ export abstract class WebTelemetryBase<P, R> {
     protected addons: Array<WebTelemetryAddon> = [];
 
     private timer: number | undefined;
-
     /**
      *
      * @param config конфигурация
@@ -46,6 +45,10 @@ export abstract class WebTelemetryBase<P, R> {
             ...config,
         };
 
+        this.flushOnHide = this.flushOnHide.bind(this);
+        document.addEventListener('visibilitychange', this.flushOnHide);
+        window.addEventListener('pagehide', this.flushOnHide, { once: true });
+
         this.addons = addons;
 
         if (transports) {
@@ -55,6 +58,21 @@ export abstract class WebTelemetryBase<P, R> {
                 ? [new WebTelemetryTransportDebug()]
                 : [new WebTelemetryTransportDefault(`${this.config.endpoint}/${this.config.projectName}`)];
         }
+    }
+
+    private flushOnHide(e?: Event) {
+        const hiding = document.visibilityState === 'hidden' || e?.type === 'pagehide';
+        if (!hiding || this.events.length === 0) return;
+
+        clearTimeout(this.timer);
+        this.sendHandler();
+        this.events = [];
+    }
+
+    public destroy() {
+        clearTimeout(this.timer);
+        document.removeEventListener('visibilitychange', this.flushOnHide);
+        window.removeEventListener('pagehide', this.flushOnHide);
     }
 
     /**
