@@ -35,7 +35,12 @@ const PERMANENT_URLS_BLACKLIST = [
     /ingest\.sentry\.io/,
     /mc\.yandex\.ru/,
     /gt\.andata\.ru/,
+    /px\.segmel\.com/,
+    /personalization-speedtest\.g\.mindbox\.ru/,
+    /email-images\.mindbox\.ru/,
     /top-fwz1\.mail\.ru/,
+    /privacy-cs\.mail\.ru/,
+    /kraken\.rambler\.ru/,
     VIDEO_URLs,
 ];
 
