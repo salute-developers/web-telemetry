@@ -7,5 +7,8 @@ export const defaultConfig: WebTelemetryBaseConfig = {
     debug: false,
     delay: 2000,
     buffSize: 25,
+    pauseSendingWhenPageInactive: false,
+    maxQueueSize: 1000,
+    queueOverflowStrategy: 'drop_oldest',
     frameTime: true,
 };

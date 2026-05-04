@@ -22,6 +22,8 @@ export interface WebTelemetryAddon<T extends object = object, M extends object =
     metadata(): Promise<M> | M;
 }
 
+export type QueueOverflowStrategy = 'drop_oldest' | 'drop_newest';
+
 export type KVDataItem<P = { key: string; value: any }, M = Record<string, any>> = {
     payload: P;
     meta?: M;
@@ -65,6 +67,21 @@ export interface WebTelemetryBaseConfig {
      * Отключает телеметрию и не вызывает транспорт
      */
     disabled: boolean;
+
+    /**
+     * Приостанавливает отправку, когда страница скрыта или заморожена браузером
+     */
+    pauseSendingWhenPageInactive: boolean;
+
+    /**
+     * Максимальное количество событий, которое может накопиться в очереди
+     */
+    maxQueueSize: number;
+
+    /**
+     * Политика удаления событий при переполнении очереди
+     */
+    queueOverflowStrategy: QueueOverflowStrategy;
 
     /**
      * Сбор и отправка frame time

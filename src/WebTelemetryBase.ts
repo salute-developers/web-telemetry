@@ -28,6 +28,8 @@ export abstract class WebTelemetryBase<P, R> {
 
     private timer: number | undefined;
 
+    public droppedEventsCount = 0;
+
     /** Страница в lifecycle-состоянии frozen (Page Lifecycle API). */
     private documentFrozen = false;
 
@@ -87,7 +89,7 @@ export abstract class WebTelemetryBase<P, R> {
                 : [new WebTelemetryTransportDefault(`${this.config.endpoint}/${this.config.projectName}`)];
         }
 
-        if (typeof document !== 'undefined') {
+        if (this.config.pauseSendingWhenPageInactive && typeof document !== 'undefined') {
             document.addEventListener('visibilitychange', this.onVisibilityChange);
             document.addEventListener('freeze', this.onFreeze);
             document.addEventListener('resume', this.onResume);
@@ -95,11 +97,33 @@ export abstract class WebTelemetryBase<P, R> {
     }
 
     private canSendTelemetry(): boolean {
-        if (typeof document === 'undefined') {
+        if (!this.config.pauseSendingWhenPageInactive || typeof document === 'undefined') {
             return true;
         }
 
         return document.visibilityState === 'visible' && !this.documentFrozen;
+    }
+
+    protected addEventsToQueue(events: Array<WebTelemetryBaseEvent>) {
+        this.events.push(...events);
+        this.dropOverflowingEvents();
+    }
+
+    private dropOverflowingEvents() {
+        const maxQueueSize = Math.max(0, this.config.maxQueueSize);
+        const overflow = this.events.length - maxQueueSize;
+
+        if (overflow <= 0) {
+            return;
+        }
+
+        if (this.config.queueOverflowStrategy === 'drop_oldest') {
+            this.events.splice(0, overflow);
+        } else {
+            this.events.length = maxQueueSize;
+        }
+
+        this.droppedEventsCount += overflow;
     }
 
     /**
@@ -110,10 +134,6 @@ export abstract class WebTelemetryBase<P, R> {
 
     protected callTransport<T>(data: T) {
         if (this.config.disabled) {
-            return;
-        }
-
-        if (!this.canSendTelemetry()) {
             return;
         }
 
@@ -194,7 +214,7 @@ export abstract class WebTelemetryBase<P, R> {
         const evt = this.createEvent(payload, meta);
 
         evt.then((data) => {
-            this.events.push(data);
+            this.addEventsToQueue([data]);
             this.scheduleSend();
         }).catch((error) => {
             console.error(error);
