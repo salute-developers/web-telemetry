@@ -78,15 +78,17 @@ export abstract class WebTelemetryBase<P, R> {
         this.callTransport([...this.events]);
     }
 
-    protected flushBufferedEvents() {
+    /**
+     * Немедленно отправляет накопленные события и сбрасывает таймер отложенной отправки.
+     */
+    protected flushBufferedEvents(): void {
         clearTimeout(this.timer);
+        this.timer = undefined;
 
-        if (!this.events.length) {
-            return;
+        if (this.events.length > 0) {
+            this.sendHandler();
+            this.events = [];
         }
-
-        this.sendHandler();
-        this.events = [];
     }
 
     /**

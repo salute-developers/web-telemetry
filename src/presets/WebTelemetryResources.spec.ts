@@ -254,5 +254,88 @@ describe('presets', () => {
             expect(payload).toHaveLength(1);
             expect(payload[0].name).toBe('https://static.example.com/font.woff2');
         });
+
+        it('continues collecting resources after load when observeResourcesAfterLoad is true', async () => {
+            vi.useFakeTimers();
+            setReadyState('loading');
+
+            const send = vi.fn();
+            const telemetry = new WebTelemetryResources(
+                'test-project',
+                {
+                    projectName: 'test-project-resources',
+                    endpoint: 'https://telemetry.example.com',
+                    delay: 1_000,
+                    buffSize: 10,
+                    debug: false,
+                    observeResourcesAfterLoad: true,
+                },
+                [{ send }],
+            );
+
+            telemetry.start();
+
+            const observer = MockPerformanceObserver.instance;
+
+            expect(observer).toBeDefined();
+
+            observer?.emit([createResourceEntry('https://static.example.com/app.js', { duration: 21 })]);
+            await flushMicrotasks();
+
+            setReadyState('complete');
+            window.dispatchEvent(new Event('load'));
+            await flushMicrotasks();
+
+            expect(observer?.disconnected).toBe(false);
+
+            observer?.emit([createResourceEntry('https://static.example.com/late.js', { duration: 12 })]);
+            await flushMicrotasks();
+
+            vi.advanceTimersByTime(1_000);
+            await flushMicrotasks();
+
+            expect(send).toHaveBeenCalledTimes(1);
+
+            const payload = JSON.parse(send.mock.calls[0][0]);
+
+            expect(payload.map((entry: { name: string }) => entry.name)).toEqual([
+                'https://static.example.com/app.js',
+                'https://static.example.com/late.js',
+            ]);
+        });
+
+        it('flushes observer records on manual end before disconnect', async () => {
+            setReadyState('loading');
+
+            const send = vi.fn();
+            const telemetry = new WebTelemetryResources(
+                'test-project',
+                {
+                    projectName: 'test-project-resources',
+                    endpoint: 'https://telemetry.example.com',
+                    delay: 1_000,
+                    buffSize: 10,
+                    debug: false,
+                    observeResourcesAfterLoad: true,
+                },
+                [{ send }],
+            );
+
+            telemetry.start();
+
+            const observer = MockPerformanceObserver.instance;
+
+            observer?.queue([createResourceEntry('https://static.example.com/manual-end.js', { duration: 44 })]);
+
+            await telemetry.end();
+
+            expect(observer?.disconnected).toBe(true);
+            expect(send).toHaveBeenCalledTimes(1);
+
+            const payload = JSON.parse(send.mock.calls[0][0]);
+
+            expect(payload).toHaveLength(1);
+            expect(payload[0].name).toBe('https://static.example.com/manual-end.js');
+        });
     });
 });

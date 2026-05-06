@@ -1,4 +1,4 @@
-import type { WebTelemetryResourcesConfig, WebTelemetryTransport } from '../types.js';
+import type { WebTelemetryBaseEvent, WebTelemetryResourcesConfig, WebTelemetryTransport } from '../types.js';
 import { WebTelemetryBase } from '../WebTelemetryBase.js';
 
 const FIELDS_TO_EXTRACT = [
@@ -59,11 +59,18 @@ export class WebTelemetryResources extends WebTelemetryBase<WebTelemetryResource
     private static observer: PerformanceObserver | undefined;
     private validatePerformanceEntry;
     private isObservationStarted: boolean = false;
-    private isObservationContinuedAfterLoad: boolean = false;
-    private isFinalized: boolean = false;
+    private readonly observeResourcesAfterLoad: boolean;
+    private hasShutDown = false;
+    private sharedShutdownPromise: Promise<void> | null = null;
 
-    private readonly onDocumentReady = () => {
-        void this.finalizeAfterDocumentReady();
+    private readonly boundLoadFinalizer = () => {
+        void this.finalizeShutdown();
+    };
+
+    private readonly onPerformanceObserver = (entryList: PerformanceObserverEntryList) => {
+        void this.processResourceEntries(entryList.getEntries()).catch((error) => {
+            console.error(error);
+        });
     };
 
     constructor(name: string, config: WebTelemetryResourcesConfig, transports?: Array<WebTelemetryTransport>) {
@@ -74,102 +81,143 @@ export class WebTelemetryResources extends WebTelemetryBase<WebTelemetryResource
             config.resourcesBlackList || [],
         );
         this.name = name;
-        this.isObservationContinuedAfterLoad = config.observeAfterLoad ?? false;
+        this.observeResourcesAfterLoad = config.observeResourcesAfterLoad ?? false;
 
-        const handler = this.handler.bind(this);
-
-        if (window.PerformanceObserver && !WebTelemetryResources.observer) {
-            WebTelemetryResources.observer = new PerformanceObserver(handler);
+        if (typeof window !== 'undefined' && window.PerformanceObserver && !WebTelemetryResources.observer) {
+            WebTelemetryResources.observer = new PerformanceObserver(this.onPerformanceObserver);
         }
     }
 
-    private handler(entryList: PerformanceObserverEntryList) {
-        if (this.config.disabled || this.isFinalized) {
-            return;
-        }
-
-        void this.processResources(entryList.getEntriesByType('resource'));
-    }
-
-    private shouldSkipResource(res: PerformanceEntry) {
-        /**
-         * Эта проверка необходима чтобы `PerformanceObserver` не тригерился
-         * на отправку данных в бекенд. Если этого не сделать, то шедулер будет
-         * бесконечно планировать отправку данных после любой отправки данных
-         */
-        return Boolean(res.name && this.config.endpoint && res.name.includes(this.config.endpoint));
-    }
-
-    private createResourcePayload(res: PerformanceEntry) {
-        const resData = res.toJSON ? res.toJSON() : {};
-
-        const evt: WebTelemetryResourcesData = {
-            hostname: window.location.hostname,
-            project: this.name,
-            path: window.location.href,
-        };
-
-        for (const entryName of FIELDS_TO_EXTRACT) {
-            const value = resData[entryName];
-            if (value) {
-                evt[entryName] = typeof value === 'number' ? Math.round(value) : value;
-            }
-        }
-
-        return evt;
-    }
-
-    private async processResources(resources: PerformanceEntry[]) {
+    /**
+     * Обрабатывает записи Performance API: фильтрация, push в очередь телеметрии (асинхронно по цепочке createEvent).
+     */
+    private async processResourceEntries(entries: PerformanceEntry[]): Promise<void> {
         if (this.config.disabled) {
             return;
         }
 
-        const createdEvents = await Promise.all(
-            resources
-                .filter(this.validatePerformanceEntry)
-                .filter((entry) => !this.shouldSkipResource(entry))
-                .map((entry) => this.createEvent(this.createResourcePayload(entry))),
-        );
+        const resources = entries
+            .filter((e): e is PerformanceResourceTiming => e.entryType === 'resource')
+            .filter(this.validatePerformanceEntry);
 
-        if (!createdEvents.length) {
-            return;
+        const pendingPushes: Array<Promise<WebTelemetryBaseEvent>> = [];
+
+        for (const res of resources) {
+            /**
+             * Эта проверка необходима чтобы `PerformanceObserver` не тригерился
+             * на отправку данных в бекенд. Если этого не сделать, то шедулер будет
+             * бесконечно планировать отправку данных после любой отправки данных
+             */
+            if (res.name && this.config.endpoint && res.name.includes(this.config.endpoint)) {
+                continue;
+            }
+
+            const resData =
+                'toJSON' in res && typeof res.toJSON === 'function'
+                    ? (res.toJSON() as Record<string, unknown>)
+                    : (res as unknown as Record<string, unknown>);
+
+            const evt: WebTelemetryResourcesData = {
+                hostname: typeof window !== 'undefined' ? window.location.hostname : '',
+                project: this.name,
+                path: typeof window !== 'undefined' ? window.location.href : '',
+            };
+
+            for (const entryName of FIELDS_TO_EXTRACT) {
+                const value = resData[entryName];
+                if (value) {
+                    evt[entryName] = typeof value === 'number' ? Math.round(value) : (value as string);
+                }
+            }
+
+            pendingPushes.push(this.push(evt));
         }
 
-        this.events.push(...createdEvents);
-        this.scheduleSend();
-    }
-
-    private removeDocumentReadyListener() {
-        window.removeEventListener('load', this.onDocumentReady);
-    }
-
-    private async finalizeAfterDocumentReady() {
-        if (this.isFinalized) {
-            return;
-        }
-
-        this.isFinalized = true;
-        this.removeDocumentReadyListener();
-
-        if (WebTelemetryResources.observer && this.isObservationStarted) {
-            const bufferedEntries = WebTelemetryResources.observer.takeRecords();
-            WebTelemetryResources.observer.disconnect();
-            this.isObservationStarted = false;
-
-            await this.processResources(bufferedEntries);
-        }
-
-        this.flushBufferedEvents();
+        await Promise.all(pendingPushes);
     }
 
     payloadToJSON(payload: WebTelemetryResourcesData) {
         return payload;
     }
 
-    public start() {
-        if (this.isObservationStarted || this.isFinalized) {
+    /**
+     * После `load` останавливаем наблюдение за ресурсами, если не запрошено продолжение.
+     */
+    private finalizeAfterDocumentReady(): void {
+        if (this.observeResourcesAfterLoad || typeof window === 'undefined') {
             return;
         }
+
+        if (document.readyState === 'complete') {
+            void this.finalizeShutdown();
+        } else {
+            window.addEventListener('load', this.boundLoadFinalizer, { once: true });
+        }
+    }
+
+    private async finalizeShutdown(): Promise<void> {
+        if (this.sharedShutdownPromise) {
+            await this.sharedShutdownPromise;
+            this.flushBufferedEvents();
+            return;
+        }
+
+        this.sharedShutdownPromise = (async () => {
+            try {
+                await this.shutdownObservation();
+            } catch (error) {
+                console.error(error);
+            }
+        })();
+
+        try {
+            await this.sharedShutdownPromise;
+        } finally {
+            this.sharedShutdownPromise = null;
+        }
+    }
+
+    /**
+     * Единый путь остановки: снять слушатель `load`, дочитать очередь observer,
+     * обработать записи, сбросить буфер событий, отключить observer.
+     */
+    private async shutdownObservation(): Promise<void> {
+        if (this.hasShutDown) {
+            this.flushBufferedEvents();
+            return;
+        }
+
+        if (typeof window !== 'undefined') {
+            window.removeEventListener('load', this.boundLoadFinalizer);
+        }
+
+        const obs = WebTelemetryResources.observer;
+
+        if (obs && this.isObservationStarted) {
+            let batch: PerformanceEntry[];
+            do {
+                batch = obs.takeRecords();
+                if (batch.length > 0) {
+                    await this.processResourceEntries(batch);
+                }
+            } while (batch.length > 0);
+
+            this.flushBufferedEvents();
+            obs.disconnect();
+            this.isObservationStarted = false;
+        }
+
+        this.flushBufferedEvents();
+        this.hasShutDown = true;
+    }
+
+    public start() {
+        if (this.isObservationStarted) {
+            return;
+        }
+
+        this.hasShutDown = false;
+
         try {
             if (WebTelemetryResources.observer) {
                 WebTelemetryResources.observer.observe({
@@ -177,29 +225,13 @@ export class WebTelemetryResources extends WebTelemetryBase<WebTelemetryResource
                     buffered: true,
                 });
                 this.isObservationStarted = true;
-
-                if (document.readyState === 'complete') {
-                    if (!this.isObservationContinuedAfterLoad) {
-                        void this.finalizeAfterDocumentReady();
-                    }
-                    return;
-                }
-
-                if (!this.isObservationContinuedAfterLoad) {
-                    window.addEventListener('load', this.onDocumentReady, { once: true });
-                }
+                this.finalizeAfterDocumentReady();
             }
             // eslint-disable-next-line no-empty
         } catch (_e) {}
     }
 
-    public end() {
-        this.removeDocumentReadyListener();
-
-        if (WebTelemetryResources.observer) {
-            this.flushBufferedEvents();
-            WebTelemetryResources.observer.disconnect();
-            this.isObservationStarted = false;
-        }
+    public async end(): Promise<void> {
+        await this.finalizeShutdown();
     }
 }

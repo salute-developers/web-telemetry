@@ -82,18 +82,18 @@ type ResourcesBlackList = {
      * Экономим трафик пользователя и наши ресурсы.
      */
     resourcesBlackList?: RegExp[];
-};
 
-type ResourcesObservationOptions = {
     /**
-     * Продолжать наблюдение за ресурсами после загрузки документа
+     * Продолжать наблюдение за resource timing после события `load`.
+     * По умолчанию `false`: после загрузки документа очередь observer дочитывается,
+     * буфер отправляется, наблюдение останавливается.
      */
-    observeAfterLoad?: boolean;
+    observeResourcesAfterLoad?: boolean;
 };
 
-export type WebTelemetryResourcesConfig = WebTelemetryConfig & ResourcesBlackList & ResourcesObservationOptions;
+export type WebTelemetryResourcesConfig = WebTelemetryConfig & ResourcesBlackList;
 
-export type WebTelemetryExtendedConfig = WebTelemetryConfig & ResourcesBlackList & ResourcesObservationOptions;
+export type WebTelemetryExtendedConfig = WebTelemetryConfig & ResourcesBlackList;
 
 export type WindowWithAssistant = Window &
     AssistantWindow & {
