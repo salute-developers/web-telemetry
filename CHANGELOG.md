@@ -1,3 +1,15 @@
+# v2.0.18 (Fri May 08 2026)
+
+#### 🐛 Bug Fix
+
+- Do not sending telemetry while on freeze or disabled [#43](https://github.com/salute-developers/web-telemetry/pull/43) ([@pamellix](https://github.com/pamellix))
+
+#### Authors: 1
+
+- Paul ([@pamellix](https://github.com/pamellix))
+
+---
+
 # v2.0.17 (Tue Apr 07 2026)
 
 #### 🐛 Bug Fix
