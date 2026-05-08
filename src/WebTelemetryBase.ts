@@ -28,6 +28,39 @@ export abstract class WebTelemetryBase<P, R> {
 
     private timer: number | undefined;
 
+    public droppedEventsCount = 0;
+
+    /** Страница в lifecycle-состоянии frozen (Page Lifecycle API). */
+    private documentFrozen = false;
+
+    private readonly onVisibilityChange = () => {
+        if (typeof document === 'undefined') {
+            return;
+        }
+
+        if (document.visibilityState === 'hidden') {
+            clearTimeout(this.timer);
+            return;
+        }
+
+        if (this.events.length > 0) {
+            this.scheduleSend();
+        }
+    };
+
+    private readonly onFreeze = () => {
+        this.documentFrozen = true;
+        clearTimeout(this.timer);
+    };
+
+    private readonly onResume = () => {
+        this.documentFrozen = false;
+
+        if (this.events.length > 0) {
+            this.scheduleSend();
+        }
+    };
+
     /**
      *
      * @param config конфигурация
@@ -55,6 +88,42 @@ export abstract class WebTelemetryBase<P, R> {
                 ? [new WebTelemetryTransportDebug()]
                 : [new WebTelemetryTransportDefault(`${this.config.endpoint}/${this.config.projectName}`)];
         }
+
+        if (this.config.pauseSendingWhenPageInactive && typeof document !== 'undefined') {
+            document.addEventListener('visibilitychange', this.onVisibilityChange);
+            document.addEventListener('freeze', this.onFreeze);
+            document.addEventListener('resume', this.onResume);
+        }
+    }
+
+    private canSendTelemetry(): boolean {
+        if (!this.config.pauseSendingWhenPageInactive || typeof document === 'undefined') {
+            return true;
+        }
+
+        return document.visibilityState === 'visible' && !this.documentFrozen;
+    }
+
+    protected addEventsToQueue(events: Array<WebTelemetryBaseEvent>) {
+        this.events.push(...events);
+        this.dropOverflowingEvents();
+    }
+
+    private dropOverflowingEvents() {
+        const maxQueueSize = Math.max(0, this.config.maxQueueSize);
+        const overflow = this.events.length - maxQueueSize;
+
+        if (overflow <= 0) {
+            return;
+        }
+
+        if (this.config.queueOverflowStrategy === 'drop_oldest') {
+            this.events.splice(0, overflow);
+        } else {
+            this.events.length = maxQueueSize;
+        }
+
+        this.droppedEventsCount += overflow;
     }
 
     /**
@@ -84,11 +153,19 @@ export abstract class WebTelemetryBase<P, R> {
     protected scheduleSend() {
         clearTimeout(this.timer);
 
+        if (!this.canSendTelemetry()) {
+            return;
+        }
+
         if (this.config.buffSize && this.events.length >= this.config.buffSize) {
             this.sendHandler();
             this.events = [];
         } else {
             this.timer = window.setTimeout(() => {
+                if (!this.canSendTelemetry()) {
+                    return;
+                }
+
                 this.sendHandler();
                 this.events = [];
             }, this.config.delay);
@@ -137,7 +214,7 @@ export abstract class WebTelemetryBase<P, R> {
         const evt = this.createEvent(payload, meta);
 
         evt.then((data) => {
-            this.events.push(data);
+            this.addEventsToQueue([data]);
             this.scheduleSend();
         }).catch((error) => {
             console.error(error);
