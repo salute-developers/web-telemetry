@@ -81,7 +81,7 @@ export class WebTelemetryResources extends WebTelemetryBase<WebTelemetryResource
             config.resourcesBlackList || [],
         );
         this.name = name;
-        this.observeResourcesAfterLoad = config.observeResourcesAfterLoad ?? false;
+        this.observeResourcesAfterLoad = config.observeResourcesAfterLoad ?? true;
 
         if (typeof window !== 'undefined' && window.PerformanceObserver && !WebTelemetryResources.observer) {
             WebTelemetryResources.observer = new PerformanceObserver(this.onPerformanceObserver);
@@ -141,7 +141,7 @@ export class WebTelemetryResources extends WebTelemetryBase<WebTelemetryResource
     }
 
     /**
-     * После `load` останавливаем наблюдение за ресурсами, если не запрошено продолжение.
+     * После `load` останавливаем наблюдение за ресурсами, если в конфиге `observeResourcesAfterLoad: false`.
      */
     private finalizeAfterDocumentReady(): void {
         if (this.observeResourcesAfterLoad || typeof window === 'undefined') {

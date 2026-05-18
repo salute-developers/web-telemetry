@@ -166,7 +166,7 @@ describe('presets', () => {
     });
 
     describe('WebTelemetryResources:document ready', () => {
-        it('flushes collected resources on load and stops further observation', async () => {
+        it('when observeResourcesAfterLoad is false, flushes on load and stops further observation', async () => {
             vi.useFakeTimers();
             setReadyState('loading');
 
@@ -179,6 +179,7 @@ describe('presets', () => {
                     delay: 1_000,
                     buffSize: 10,
                     debug: false,
+                    observeResourcesAfterLoad: false,
                 },
                 [{ send }],
             );
@@ -222,7 +223,7 @@ describe('presets', () => {
             expect(send).toHaveBeenCalledTimes(1);
         });
 
-        it('flushes buffered resources immediately when started after document ready', async () => {
+        it('when observeResourcesAfterLoad is false, flushes buffered resources immediately if document already complete', async () => {
             setReadyState('complete');
             MockPerformanceObserver.bufferedEntries = [
                 createResourceEntry('https://static.example.com/font.woff2', { duration: 14 }),
@@ -237,6 +238,7 @@ describe('presets', () => {
                     delay: 1_000,
                     buffSize: 10,
                     debug: false,
+                    observeResourcesAfterLoad: false,
                 },
                 [{ send }],
             );
@@ -255,7 +257,7 @@ describe('presets', () => {
             expect(payload[0].name).toBe('https://static.example.com/font.woff2');
         });
 
-        it('continues collecting resources after load when observeResourcesAfterLoad is true', async () => {
+        it('by default continues collecting resources after load', async () => {
             vi.useFakeTimers();
             setReadyState('loading');
 
@@ -268,7 +270,6 @@ describe('presets', () => {
                     delay: 1_000,
                     buffSize: 10,
                     debug: false,
-                    observeResourcesAfterLoad: true,
                 },
                 [{ send }],
             );
@@ -316,7 +317,6 @@ describe('presets', () => {
                     delay: 1_000,
                     buffSize: 10,
                     debug: false,
-                    observeResourcesAfterLoad: true,
                 },
                 [{ send }],
             );
