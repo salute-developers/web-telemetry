@@ -99,6 +99,13 @@ type ResourcesBlackList = {
      * Экономим трафик пользователя и наши ресурсы.
      */
     resourcesBlackList?: RegExp[];
+
+    /**
+     * Продолжать наблюдение за resource timing после события `load`.
+     * По умолчанию `true` (обратная совместимость при обновлении пакета).
+     * Установите `false`, чтобы после `load` дочитать очередь observer, отправить буфер и остановить наблюдение.
+     */
+    observeResourcesAfterLoad?: boolean;
 };
 
 export type WebTelemetryResourcesConfig = WebTelemetryConfig & ResourcesBlackList;

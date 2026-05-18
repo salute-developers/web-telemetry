@@ -148,6 +148,19 @@ export abstract class WebTelemetryBase<P, R> {
     }
 
     /**
+     * Немедленно отправляет накопленные события и сбрасывает таймер отложенной отправки.
+     */
+    protected flushBufferedEvents(): void {
+        clearTimeout(this.timer);
+        this.timer = undefined;
+
+        if (this.events.length > 0) {
+            this.sendHandler();
+            this.events = [];
+        }
+    }
+
+    /**
      * Планирует отправку данных на сервер
      */
     protected scheduleSend() {
