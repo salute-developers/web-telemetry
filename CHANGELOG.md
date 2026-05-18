@@ -1,3 +1,15 @@
+# v2.0.19 (Mon May 18 2026)
+
+#### 🐛 Bug Fix
+
+- Do not sending data after document ready [#44](https://github.com/salute-developers/web-telemetry/pull/44) ([@pamellix](https://github.com/pamellix))
+
+#### Authors: 1
+
+- Paul ([@pamellix](https://github.com/pamellix))
+
+---
+
 # v2.0.18 (Fri May 08 2026)
 
 #### 🐛 Bug Fix
