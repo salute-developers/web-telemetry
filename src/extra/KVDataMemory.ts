@@ -56,7 +56,9 @@ export class KVDataMemory implements WebTelemetryKVData {
                     rawBreakdown: result.breakdown ?? [],
                 };
                 // eslint-disable-next-line no-empty
-            } catch (_e) {}
+            } catch (e) {
+                console.log('UASM error: ', e);
+            }
         }
 
         if (perf.memory) {
