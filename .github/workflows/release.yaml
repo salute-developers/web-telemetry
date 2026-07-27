@@ -43,8 +43,7 @@ jobs:
 
       - name: Setup packages
         run: |
-          corepack npm --version
-          corepack npm ci --ignore-scripts
+          npm ci --ignore-scripts
 
       - name: Check code style
         run: npm run format:check
@@ -61,7 +60,7 @@ jobs:
       - name: Update package-lock's
         if: github.event_name != 'pull_request'
         run: |
-          corepack npm install --package-lock-only --ignore-scripts
+          npm install --package-lock-only --ignore-scripts
 
       - name: Extract branch name
         if: github.event_name != 'pull_request'
