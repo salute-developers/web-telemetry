@@ -1,3 +1,15 @@
+# v2.0.20 (Tue Jul 28 2026)
+
+#### 🐛 Bug Fix
+
+- fix: fixing npm version for dependabot [#58](https://github.com/salute-developers/web-telemetry/pull/58) ([@pamellix](https://github.com/pamellix))
+
+#### Authors: 1
+
+- Paul ([@pamellix](https://github.com/pamellix))
+
+---
+
 # v2.0.19 (Mon May 18 2026)
 
 #### 🐛 Bug Fix
