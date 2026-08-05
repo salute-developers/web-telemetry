@@ -1,3 +1,15 @@
+# v2.0.21 (Wed Aug 05 2026)
+
+#### 🐛 Bug Fix
+
+- (SPEED-2066): skip release steps on pull requests [#59](https://github.com/salute-developers/web-telemetry/pull/59) ([@pamellix](https://github.com/pamellix))
+
+#### Authors: 1
+
+- Paul ([@pamellix](https://github.com/pamellix))
+
+---
+
 # v2.0.20 (Tue Jul 28 2026)
 
 #### 🐛 Bug Fix
