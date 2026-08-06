@@ -55,7 +55,7 @@
     "jsdom": "25.0.1",
     "prettier": "3.5.3",
     "typescript": "5.8.2",
-    "vitest": "3.0.8"
+    "vitest": "3.2.7"
   },
   "publishConfig": {
     "access": "public"
