@@ -1,3 +1,15 @@
+# v5.0.0 (Thu Aug 06 2026)
+
+#### 💥 Breaking Change
+
+- Bump glob from 11.0.1 to 12.0.0 [#40](https://github.com/salute-developers/web-telemetry/pull/40) ([@dependabot[bot]](https://github.com/dependabot[bot]))
+
+#### Authors: 1
+
+- [@dependabot[bot]](https://github.com/dependabot[bot])
+
+---
+
 # v4.0.0 (Thu Aug 06 2026)
 
 #### 💥 Breaking Change
