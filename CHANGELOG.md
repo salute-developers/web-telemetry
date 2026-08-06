@@ -1,3 +1,15 @@
+# v4.0.0 (Thu Aug 06 2026)
+
+#### 💥 Breaking Change
+
+- Bump uuid from 11.1.0 to 14.0.0 [#47](https://github.com/salute-developers/web-telemetry/pull/47) ([@dependabot[bot]](https://github.com/dependabot[bot]))
+
+#### Authors: 1
+
+- [@dependabot[bot]](https://github.com/dependabot[bot])
+
+---
+
 # v3.0.0 (Thu Aug 06 2026)
 
 #### 💥 Breaking Change
