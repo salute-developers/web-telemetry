@@ -1,3 +1,23 @@
+# v3.0.0 (Thu Aug 06 2026)
+
+#### 💥 Breaking Change
+
+- Bump esbuild and vitest [#54](https://github.com/salute-developers/web-telemetry/pull/54) ([@dependabot[bot]](https://github.com/dependabot[bot]))
+
+#### 🔩 Dependency Updates
+
+- Bump vite from 6.4.1 to 6.4.3 [#57](https://github.com/salute-developers/web-telemetry/pull/57) ([@dependabot[bot]](https://github.com/dependabot[bot]))
+- Bump @protobufjs/utf8 from 1.1.0 to 1.1.2 [#49](https://github.com/salute-developers/web-telemetry/pull/49) ([@dependabot[bot]](https://github.com/dependabot[bot]))
+- Bump form-data from 4.0.5 to 4.0.6 [#55](https://github.com/salute-developers/web-telemetry/pull/55) ([@dependabot[bot]](https://github.com/dependabot[bot]))
+- Bump brace-expansion from 1.1.12 to 1.1.18 [#60](https://github.com/salute-developers/web-telemetry/pull/60) ([@dependabot[bot]](https://github.com/dependabot[bot]))
+- Bump postcss from 8.5.8 to 8.5.25 [#61](https://github.com/salute-developers/web-telemetry/pull/61) ([@dependabot[bot]](https://github.com/dependabot[bot]))
+
+#### Authors: 1
+
+- [@dependabot[bot]](https://github.com/dependabot[bot])
+
+---
+
 # v2.0.21 (Wed Aug 05 2026)
 
 #### 🐛 Bug Fix
