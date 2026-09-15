@@ -2,6 +2,7 @@ import { KVDataFrameTime } from '../extra/KVDataFrameTime.js';
 import { KVDataLongTask } from '../extra/KVDataLongTask.js';
 import type { WebTelemetryAddon, WebTelemetryExtendedConfig, WebTelemetryTransport } from '../types.js';
 import { defaultConfig } from '../config.js';
+import { KVDataMemory } from '../extra/KVDataMemory.js';
 
 import { WebTelemetryCanvasApp } from './WebTelemetryCanvasApp.js';
 import { WebTelemetryKV } from './WebTelemetryKV.js';
@@ -12,6 +13,8 @@ export class WebTelemetryMonitoringCanvas {
 
     public canvasApp: WebTelemetryCanvasApp;
     public KV: WebTelemetryKV;
+    public memory: KVDataMemory;
+    protected isStartedMemoryMonitoring = false;
     public resources: WebTelemetryResources;
     protected isStartedMonitoring = false;
     private longTask: KVDataLongTask;
@@ -21,25 +24,34 @@ export class WebTelemetryMonitoringCanvas {
         config: WebTelemetryExtendedConfig,
         transports?: Array<WebTelemetryTransport>,
         addons: Array<WebTelemetryAddon> = [],
+        canvasAppInstance?: WebTelemetryCanvasApp,
+        KVInstance?: WebTelemetryKV,
+        resourcesInstance?: WebTelemetryResources,
     ) {
-        this.canvasApp = new WebTelemetryCanvasApp(config, addons, transports);
+        this.canvasApp = canvasAppInstance ?? new WebTelemetryCanvasApp(config, addons, transports);
 
-        this.KV = new WebTelemetryKV(
-            {
-                ...config,
-                projectName: `${config.projectName}-metrics`,
-            },
-            transports,
-        );
+        this.KV =
+            KVInstance ??
+            new WebTelemetryKV(
+                {
+                    ...config,
+                    projectName: `${config.projectName}-metrics`,
+                },
+                transports,
+            );
 
-        this.resources = new WebTelemetryResources(
-            config.projectName,
-            {
-                ...config,
-                projectName: `${config.projectName}-resources`,
-            },
-            transports,
-        );
+        this.resources =
+            resourcesInstance ??
+            new WebTelemetryResources(
+                config.projectName,
+                {
+                    ...config,
+                    projectName: `${config.projectName}-resources`,
+                },
+                transports,
+            );
+
+        this.memory = new KVDataMemory(this.KV);
 
         this.longTask = new KVDataLongTask(this.KV);
 
@@ -60,7 +72,14 @@ export class WebTelemetryMonitoringCanvas {
         this.frameTime?.startMonitoring();
     }
 
-    public static Instance(config: WebTelemetryExtendedConfig, transports?: Array<WebTelemetryTransport>) {
+    public static Instance(
+        config: WebTelemetryExtendedConfig,
+        transports?: Array<WebTelemetryTransport>,
+        addons?: Array<WebTelemetryAddon>,
+        canvasAppInstance?: WebTelemetryCanvasApp,
+        KVInstance?: WebTelemetryKV,
+        resourcesInstance?: WebTelemetryResources,
+    ) {
         return (
             this._instance ||
             (this._instance = new WebTelemetryMonitoringCanvas(
@@ -69,6 +88,10 @@ export class WebTelemetryMonitoringCanvas {
                     ...config,
                 },
                 transports,
+                addons,
+                canvasAppInstance,
+                KVInstance,
+                resourcesInstance,
             ))
         );
     }
