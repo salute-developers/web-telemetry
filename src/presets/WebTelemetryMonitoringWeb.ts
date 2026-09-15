@@ -9,7 +9,6 @@ import { WebTelemetryResources } from './WebTelemetryResources.js';
 import { WebTelemetryKV } from './WebTelemetryKV.js';
 import { WebTelemetryWebApp } from './WebTelemetryWebApp.js';
 
-
 export class WebTelemetryMonitoringWeb {
     protected static _instance: WebTelemetryMonitoringWeb;
 
@@ -87,7 +86,8 @@ export class WebTelemetryMonitoringWeb {
         transports?: Array<WebTelemetryTransport>,
         webAppInstance?: WebTelemetryWebApp,
         KVInstance?: WebTelemetryKV,
-        resourcesInstance?: WebTelemetryResources) {
+        resourcesInstance?: WebTelemetryResources,
+    ) {
         return (
             this._instance ||
             (this._instance = new WebTelemetryMonitoringWeb(

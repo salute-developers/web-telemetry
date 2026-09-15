@@ -8,7 +8,6 @@ import { WebTelemetryWebApp } from './WebTelemetryWebApp.js';
 import { WebTelemetryKV } from './WebTelemetryKV.js';
 import { WebTelemetryResources } from './WebTelemetryResources.js';
 
-
 type INPAttributionReportOpts = NonNullable<Parameters<typeof onINP>[1]> & {
     includeProcessedEventEntries: false;
 };
@@ -47,11 +46,15 @@ export class WebTelemetryMonitoringWebAppWithWebVitals extends WebTelemetryMonit
         KVInstance?: WebTelemetryKV,
         resourcesInstance?: WebTelemetryResources,
     ) {
-        return this._instance || (this._instance = new WebTelemetryMonitoringWebAppWithWebVitals(
-            config,
-            transports,
-            webAppInstance,
-            KVInstance,
-            resourcesInstance,));
+        return (
+            this._instance ||
+            (this._instance = new WebTelemetryMonitoringWebAppWithWebVitals(
+                config,
+                transports,
+                webAppInstance,
+                KVInstance,
+                resourcesInstance,
+            ))
+        );
     }
 }

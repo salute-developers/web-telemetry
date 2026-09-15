@@ -89,4 +89,3 @@ export function sanitizeAttribution(metric: WebVitalsMetricWithAttribution) {
         }
     }
 }
-
