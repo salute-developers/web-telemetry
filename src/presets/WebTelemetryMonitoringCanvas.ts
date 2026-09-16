@@ -72,6 +72,15 @@ export class WebTelemetryMonitoringCanvas {
         this.frameTime?.startMonitoring();
     }
 
+    public startMemoryMonitoring() {
+        if (this.isStartedMemoryMonitoring) {
+            return;
+        }
+
+        this.isStartedMemoryMonitoring = true;
+        this.memory.startMonitoring();
+    }
+
     public static Instance(
         config: WebTelemetryExtendedConfig,
         addons: Array<WebTelemetryAddon> = [],
