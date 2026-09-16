@@ -44,8 +44,8 @@ export class WebTelemetryMonitoringCanvasWithWebVitals extends WebTelemetryMonit
 
     public static override Instance(
         config: WebTelemetryExtendedConfig,
-        transports?: Array<WebTelemetryTransport>,
         addons: Array<WebTelemetryAddon> = [],
+        transports?: Array<WebTelemetryTransport>,
         canvasAppInstance?: WebTelemetryCanvasApp,
         KVInstance?: WebTelemetryKV,
         resourcesInstance?: WebTelemetryResources,

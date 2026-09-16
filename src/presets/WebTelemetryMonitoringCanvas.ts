@@ -74,8 +74,8 @@ export class WebTelemetryMonitoringCanvas {
 
     public static Instance(
         config: WebTelemetryExtendedConfig,
+        addons: Array<WebTelemetryAddon> = [],
         transports?: Array<WebTelemetryTransport>,
-        addons?: Array<WebTelemetryAddon>,
         canvasAppInstance?: WebTelemetryCanvasApp,
         KVInstance?: WebTelemetryKV,
         resourcesInstance?: WebTelemetryResources,
