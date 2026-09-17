@@ -1,6 +1,5 @@
-import { onCLS, onFCP, onINP, onLCP } from 'web-vitals/attribution';
-
 import type { WebTelemetryExtendedConfig, WebTelemetryTransport } from '../types.js';
+import { registerWebVitals } from '../registerWebVitals.js';
 
 import { WebTelemetryMonitoringWeb } from './WebTelemetryMonitoringWeb.js';
 
@@ -11,9 +10,7 @@ export class WebTelemetryMonitoringWebAppWithWebVitals extends WebTelemetryMonit
     protected static override _instance: WebTelemetryMonitoringWebAppWithWebVitals;
 
     public startWebVitals() {
-        [onLCP, onCLS, onFCP, onINP].forEach((getMetric) => {
-            getMetric(({ name, value, attribution }) => this.KV.push({ key: name, value: value }, attribution));
-        });
+        registerWebVitals(this.KV, 'webApp');
     }
 
     public static override Instance(config: WebTelemetryExtendedConfig, transports?: Array<WebTelemetryTransport>) {
