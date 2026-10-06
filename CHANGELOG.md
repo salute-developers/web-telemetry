@@ -1,3 +1,20 @@
+# v5.0.1 (Tue Oct 06 2026)
+
+#### 🐛 Bug Fix
+
+- feat: port telemetry collection and reporting from internal implement… [#69](https://github.com/salute-developers/web-telemetry/pull/69) ([@pamellix](https://github.com/pamellix))
+
+#### 🔩 Dependency Updates
+
+- Bump ws from 8.19.0 to 8.21.2 [#62](https://github.com/salute-developers/web-telemetry/pull/62) ([@dependabot[bot]](https://github.com/dependabot[bot]))
+
+#### Authors: 2
+
+- [@dependabot[bot]](https://github.com/dependabot[bot])
+- Paul ([@pamellix](https://github.com/pamellix))
+
+---
+
 # v5.0.0 (Thu Aug 06 2026)
 
 #### 💥 Breaking Change
